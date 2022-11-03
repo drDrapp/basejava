@@ -3,57 +3,52 @@
  */
 public class ArrayStorage {
 
-    int CountResume = 0;
+    int countResume = 0;
 
     Resume[] storage = new Resume[10000];
 
     void clear() {
-        for (int i = 0; i < CountResume; i++) {
+        for (int i = 0; i < countResume; i++) {
             storage[i] = null;
         }
-        CountResume = 0;
+        countResume = 0;
     }
 
     void save(Resume r) {
-        if (storage.length == CountResume) {
+        if (storage.length == countResume) {
             return;
         }
-        storage[CountResume] = r;
-        CountResume++;
+        storage[countResume] = r;
+        countResume++;
     }
 
     Resume get(String uuid) {
-        int Index = 0;
-        while (true) {
-            if (Index == CountResume) {
-                return null;
+        for (int i = 0; i < countResume; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                return storage[i];
             }
-            if (storage[Index].uuid.equals(uuid)) {
-                return storage[Index];
-            }
-            Index++;
         }
+        return null;
     }
 
     void delete(String uuid) {
-        int Index = 0;
-        while (Index < CountResume) {
-            if (storage[Index].uuid.equals(uuid)) {
-                storage[Index] = storage[CountResume - 1];
-                storage[CountResume - 1] = null;
-                CountResume--;
+        for (int i = 0; i < countResume; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                storage[i] = storage[countResume - 1];
+                storage[countResume - 1] = null;
+                countResume--;
+                break;
             }
-            Index++;
         }
     }
 
     Resume[] getAll() {
-        Resume[] NewStorage = new Resume[CountResume];
-        System.arraycopy(storage, 0, NewStorage, 0, CountResume);
-        return NewStorage;
+        Resume[] newStorage = new Resume[countResume];
+        System.arraycopy(storage, 0, newStorage, 0, countResume);
+        return newStorage;
     }
 
     int size() {
-        return CountResume;
+        return countResume;
     }
 }
