@@ -1,11 +1,6 @@
 package com.drdrapp.webapp.model;
 
-/**
- * Initial resume class
- */
 public class Resume {
-
-    // Unique identifier
     private String uuid;
 
     @Override

@@ -5,22 +5,12 @@ import com.drdrapp.webapp.model.Resume;
 import java.util.Arrays;
 
 public class ArrayStorage {
-
     private static final int MAX_COUNT_RESUME = 10000;
     private int countResume = 0;
     private final Resume[] storage = new Resume[MAX_COUNT_RESUME];
 
-    private int getIndex(String uuid) {
-        for (int i = 0; i < countResume; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public void clear() {
-        Arrays.fill(storage, 0, countResume - 1, null);
+        Arrays.fill(storage, 0, countResume, null);
         countResume = 0;
     }
 
@@ -28,10 +18,13 @@ public class ArrayStorage {
         if (MAX_COUNT_RESUME == countResume) {
             System.out.println("Error: storage is full.");
             return;
+        } else if (getIndex(r.getUuid()) >= 0) {
+            System.out.println("Error: resume '" + r.getUuid() + "' already exist.");
+        } else {
+            storage[countResume] = r;
+            countResume++;
+            System.out.println("Resume '" + r.getUuid() + "' - successfully saved.");
         }
-        storage[countResume] = r;
-        countResume++;
-        System.out.println("Resume '" + r.getUuid() + "' - successfully saved.");
     }
 
     public Resume get(String uuid) {
@@ -67,12 +60,19 @@ public class ArrayStorage {
     }
 
     public Resume[] getAll() {
-        Resume[] newStorage = new Resume[countResume];
-        System.arraycopy(storage, 0, newStorage, 0, countResume);
-        return newStorage;
+        return Arrays.copyOf(storage, countResume);
     }
 
     public int size() {
         return countResume;
+    }
+
+    private int getIndex(String uuid) {
+        for (int i = 0; i < countResume; i++) {
+            if (storage[i].getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

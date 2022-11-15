@@ -3,9 +3,6 @@ package com.drdrapp.webapp;
 import com.drdrapp.webapp.model.*;
 import com.drdrapp.webapp.storage.*;
 
-/**
- * Test for your ArrayStorage implementation
- */
 public class MainTestArrayStorage {
     static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
 
