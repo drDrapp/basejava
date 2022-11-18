@@ -1,7 +1,7 @@
 package com.drdrapp.webapp;
 
 import com.drdrapp.webapp.model.*;
-import com.drdrapp.webapp.storage.ArrayStorage;
+import com.drdrapp.webapp.storage.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,11 +37,11 @@ public class MainArray {
                     printAll();
                     break;
                 case "delete":
-                    ARRAY_STORAGE.delete(uuid);
+                    ARRAY_STORAGE.deleteByUuid(uuid);
                     printAll();
                     break;
                 case "get":
-                    System.out.println(ARRAY_STORAGE.get(uuid));
+                    System.out.println(ARRAY_STORAGE.getByUuid(uuid));
                     break;
                 case "clear":
                     ARRAY_STORAGE.clear();
