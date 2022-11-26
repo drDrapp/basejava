@@ -6,9 +6,9 @@ public interface Storage {
 
     void save(Resume r);
 
-    void deleteByUuid(String uuid);
+    void delete(String uuid);
 
-    Resume getByUuid(String uuid);
+    Resume get(String uuid);
 
     void update(Resume r);
 

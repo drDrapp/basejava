@@ -1,4 +1,8 @@
-import static org.junit.jupiter.api.Assertions.*;
-class SortedArrayStorageTest {
-  
+package com.drdrapp.webapp.storage;
+
+class SortedArrayStorageTest extends AbstractArrayStorageTest{
+
+    public SortedArrayStorageTest() {
+        super(new SortedArrayStorage());
+    }
 }

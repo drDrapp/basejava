@@ -1,16 +1,23 @@
 package com.drdrapp.webapp.model;
 
-public class Resume implements Comparable<Resume> {
-    private String uuid;
+import java.util.UUID;
 
-    public void setUuid(String newUuid) {
-        uuid = newUuid;
+public class Resume implements Comparable<Resume> {
+    private final String uuid;
+
+    public Resume() {
+        this(UUID.randomUUID().toString());
+    }
+
+    public Resume(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getUuid() {
         return uuid;
     }
 
+    @TestAnnotation
     @Override
     public String toString() {
         return uuid;

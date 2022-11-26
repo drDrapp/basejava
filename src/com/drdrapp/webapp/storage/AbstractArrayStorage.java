@@ -1,5 +1,8 @@
 package com.drdrapp.webapp.storage;
 
+import com.drdrapp.webapp.exeption.ExistStorageException;
+import com.drdrapp.webapp.exeption.NotExistStorageException;
+import com.drdrapp.webapp.exeption.StorageException;
 import com.drdrapp.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -11,36 +14,32 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public void save(Resume r) {
         if (MAX_COUNT_RESUME == countResume) {
-            System.out.println("Error: storage is full.");
-            return;
+            throw new StorageException("Error: storage is full.", r.getUuid());
         }
         int index = getIndexByUuid(r.getUuid());
         if ( index>= 0) {
-            System.out.println("Error: resume '" + r.getUuid() + "' already exist.");
+            throw new ExistStorageException(r.getUuid());
         } else {
             saveByIndex(r, index);
             countResume++;
-            System.out.println("Resume '" + r.getUuid() + "' - successfully saved.");
         }
     }
 
-    public void deleteByUuid(String uuid) {
+    public void delete(String uuid) {
         int index = getIndexByUuid(uuid);
         if (index < 0) {
-            System.out.println("Error: resume '" + uuid + "' can`t delete, it not found.");
+            throw new NotExistStorageException(uuid);
         } else {
             deleteByIndex(index);
             storage[countResume - 1] = null;
             countResume--;
-            System.out.println("Resume '" + uuid + "' - successfully deleted.");
         }
     }
 
-    public Resume getByUuid(String uuid) {
+    public Resume get(String uuid) {
         int index = getIndexByUuid(uuid);
         if (index < 0) {
-            System.out.println("Error: resume '" + uuid + "' not found.");
-            return null;
+            throw new NotExistStorageException(uuid);
         } else {
             return storage[index];
         }
@@ -49,10 +48,9 @@ public abstract class AbstractArrayStorage implements Storage {
     public void update(Resume r) {
         int index = getIndexByUuid(r.getUuid());
         if (index < 0) {
-            System.out.println("Error: resume '" + r.getUuid() + "' can`t update, it not found.");
+            throw new NotExistStorageException(r.getUuid());
         } else {
             storage[index] = r;
-            System.out.println("Resume '" + r.getUuid() + "' - successfully updated.");
         }
     }
 

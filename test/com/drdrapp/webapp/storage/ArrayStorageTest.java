@@ -1,4 +1,8 @@
-import static org.junit.jupiter.api.Assertions.*;
-class ArrayStorageTest {
-  
+package com.drdrapp.webapp.storage;
+
+class ArrayStorageTest extends AbstractArrayStorageTest{
+
+    public ArrayStorageTest() {
+        super(new ArrayStorage());
+    }
 }
