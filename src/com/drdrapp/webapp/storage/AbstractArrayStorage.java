@@ -1,57 +1,49 @@
 package com.drdrapp.webapp.storage;
 
-import com.drdrapp.webapp.exeption.ExistStorageException;
-import com.drdrapp.webapp.exeption.NotExistStorageException;
 import com.drdrapp.webapp.exeption.StorageException;
 import com.drdrapp.webapp.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int MAX_COUNT_RESUME = 10000;
     protected final Resume[] storage = new Resume[MAX_COUNT_RESUME];
     protected int countResume = 0;
 
-    public void save(Resume r) {
+    @Override
+    protected Integer getSearchKey(String uuid) {
+        return getIndexByUuid(uuid);
+    }
+
+    @Override
+    protected boolean isExist(Object searchKey) {
+        return (int) searchKey >= 0;
+    }
+
+    @Override
+    protected void saveBySearchKey(Resume r, Object searchKey) {
         if (MAX_COUNT_RESUME == countResume) {
             throw new StorageException("Error: storage is full.", r.getUuid());
         }
-        int index = getIndexByUuid(r.getUuid());
-        if ( index>= 0) {
-            throw new ExistStorageException(r.getUuid());
-        } else {
-            saveByIndex(r, index);
-            countResume++;
-        }
+        saveByIndex(r, (int) searchKey);
+        countResume++;
     }
 
-    public void delete(String uuid) {
-        int index = getIndexByUuid(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            deleteByIndex(index);
-            storage[countResume - 1] = null;
-            countResume--;
-        }
+    @Override
+    protected void deleteBySearchKey(Object searchKey) {
+        deleteByIndex((int) searchKey);
+        storage[countResume - 1] = null;
+        countResume--;
     }
 
-    public Resume get(String uuid) {
-        int index = getIndexByUuid(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            return storage[index];
-        }
+    @Override
+    protected Resume getBySearchKey(Object searchKey) {
+        return storage[(int) searchKey];
     }
 
-    public void update(Resume r) {
-        int index = getIndexByUuid(r.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(r.getUuid());
-        } else {
-            storage[index] = r;
-        }
+    @Override
+    protected void updateBySearchKey(Resume r, Object searchKey) {
+        storage[(int) searchKey] = r;
     }
 
     public int size() {

@@ -3,7 +3,7 @@ package com.drdrapp.webapp;
 import com.drdrapp.webapp.model.*;
 import com.drdrapp.webapp.storage.*;
 
-public class MainTestArrayStorage {
+public class MainTestStorage {
     //static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
     //static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
     static final ListStorage ARRAY_STORAGE = new ListStorage();
