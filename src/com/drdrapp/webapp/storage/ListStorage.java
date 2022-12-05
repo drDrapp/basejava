@@ -22,22 +22,22 @@ public class ListStorage extends AbstractStorage{
     }
 
     @Override
-    protected void saveBySearchKey(Resume r, Object searchKey) {
+    protected void doSave(Resume r, Object searchKey) {
         storage.add(r);
     }
 
     @Override
-    protected void deleteBySearchKey(Object searchKey) {
+    protected void doDelete(Object searchKey) {
         storage.remove((int) searchKey);
     }
 
     @Override
-    protected Resume getBySearchKey(Object searchKey) {
+    protected Resume doGet(Object searchKey) {
         return storage.get((int) searchKey);
     }
 
     @Override
-    protected void updateBySearchKey(Resume r, Object searchKey) {
+    protected void doUpdate(Resume r, Object searchKey) {
         storage.set((int) searchKey, r);
     }
 

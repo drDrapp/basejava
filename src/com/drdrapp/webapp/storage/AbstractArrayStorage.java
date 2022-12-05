@@ -21,7 +21,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveBySearchKey(Resume r, Object searchKey) {
+    protected void doSave(Resume r, Object searchKey) {
         if (MAX_COUNT_RESUME == countResume) {
             throw new StorageException("Error: storage is full.", r.getUuid());
         }
@@ -30,19 +30,19 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void deleteBySearchKey(Object searchKey) {
+    protected void doDelete(Object searchKey) {
         deleteByIndex((int) searchKey);
         storage[countResume - 1] = null;
         countResume--;
     }
 
     @Override
-    protected Resume getBySearchKey(Object searchKey) {
+    protected Resume doGet(Object searchKey) {
         return storage[(int) searchKey];
     }
 
     @Override
-    protected void updateBySearchKey(Resume r, Object searchKey) {
+    protected void doUpdate(Resume r, Object searchKey) {
         storage[(int) searchKey] = r;
     }
 
