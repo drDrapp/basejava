@@ -4,9 +4,11 @@ import com.drdrapp.webapp.model.*;
 import com.drdrapp.webapp.storage.*;
 
 public class MainTestStorage {
-    //static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
-    //static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
-    static final ListStorage ARRAY_STORAGE = new ListStorage();
+    // Типы тестовых хранилищ
+    //static final ArrayStorage STORAGE = new ArrayStorage();
+    //static final SortedArrayStorage STORAGE = new SortedArrayStorage();
+    //static final ListStorage STORAGE = new ListStorage();
+    static final MapStorage STORAGE = new MapStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume("uuid3");
@@ -15,30 +17,30 @@ public class MainTestStorage {
         Resume r4 = new Resume("uuid5");
         Resume r5 = new Resume("uuid4");
 
-        ARRAY_STORAGE.save(r1);
-        ARRAY_STORAGE.save(r2);
-        ARRAY_STORAGE.save(r3);
-        ARRAY_STORAGE.save(r4);
-        ARRAY_STORAGE.save(r5);
+        STORAGE.save(r1);
+        STORAGE.save(r2);
+        STORAGE.save(r3);
+        STORAGE.save(r4);
+        STORAGE.save(r5);
 
-        System.out.println("Get r1: " + ARRAY_STORAGE.get(r1.getUuid()));
-        System.out.println("Size: " + ARRAY_STORAGE.size());
+        System.out.println("Get r1: " + STORAGE.get(r1.getUuid()));
+        System.out.println("Size: " + STORAGE.size());
         //System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
 
-        ARRAY_STORAGE.update(r3);
+        STORAGE.update(r3);
         
         printAll();
-        ARRAY_STORAGE.delete(r1.getUuid());
+        STORAGE.delete(r1.getUuid());
         printAll();
-        ARRAY_STORAGE.clear();
+        STORAGE.clear();
         printAll();
 
-        System.out.println("Size: " + ARRAY_STORAGE.size());
+        System.out.println("Size: " + STORAGE.size());
     }
 
     static void printAll() {
         System.out.println("\nGet All");
-        for (Resume r : ARRAY_STORAGE.getAll()) {
+        for (Resume r : STORAGE.getAll()) {
             System.out.println(r);
         }
     }
