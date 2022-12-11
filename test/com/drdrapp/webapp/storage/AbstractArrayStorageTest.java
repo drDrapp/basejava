@@ -18,12 +18,12 @@ abstract class AbstractArrayStorageTest extends AbstractStorageTest{
         try {
             storage.clear();
             for (int i = 0; i < AbstractArrayStorage.MAX_COUNT_RESUME; i++) {
-                storage.save(new Resume());
+                storage.save(new Resume("Василий Тестовый"));
             }
         } catch (Exception e) {
             fail("Storage overflow.");
         }
-        assertThrows(StorageException.class, () -> storage.save(new Resume()));
+        assertThrows(StorageException.class, () -> storage.save(new Resume("Василий Тестовый")));
     }
 
 }

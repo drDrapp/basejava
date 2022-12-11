@@ -4,6 +4,7 @@ import com.drdrapp.webapp.exeption.StorageException;
 import com.drdrapp.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int MAX_COUNT_RESUME = 10000;
@@ -50,8 +51,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return countResume;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, countResume);
+    @Override
+    protected List<Resume> doGetAll() {
+        return Arrays.asList(Arrays.copyOf(storage, countResume));
     }
 
     public void clear() {

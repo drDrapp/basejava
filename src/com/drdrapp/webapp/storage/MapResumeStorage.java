@@ -3,42 +3,41 @@ package com.drdrapp.webapp.storage;
 import com.drdrapp.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ListStorage extends AbstractStorage{
-    protected List<Resume> storage = new ArrayList<>();
+public class MapResumeStorage extends AbstractStorage {
+    protected Map<String, Resume> storage = new HashMap<>();
+
     @Override
-    protected Integer getSearchKey(String uuid) {
-        for (var listIterator = storage.listIterator(); listIterator.hasNext(); ) {
-            Resume r = listIterator.next();
-            if (r.getUuid().equals(uuid)) return listIterator.previousIndex();
-        }
-        return -1;
+    protected Resume getSearchKey(String uuid) {
+        return storage.get(uuid);
     }
 
     @Override
     protected boolean isExist(Object searchKey) {
-        return (int) searchKey >= 0;
+        return searchKey != null;
     }
 
     @Override
     protected void doSave(Resume r, Object searchKey) {
-        storage.add(r);
+        storage.put(r.getUuid(), r);
     }
 
     @Override
     protected void doDelete(Object searchKey) {
-        storage.remove((int) searchKey);
+        storage.remove(((Resume) searchKey).getUuid());
     }
 
     @Override
     protected Resume doGet(Object searchKey) {
-        return storage.get((int) searchKey);
+        return (Resume) searchKey;
     }
 
     @Override
     protected void doUpdate(Resume r, Object searchKey) {
-        storage.set((int) searchKey, r);
+        storage.put(r.getUuid(), r);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class ListStorage extends AbstractStorage{
 
     @Override
     public List<Resume> doGetAll() {
-        return new ArrayList<>(storage);
+        return new ArrayList<>(storage.values());
     }
 
     @Override
