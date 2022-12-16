@@ -2,13 +2,16 @@ package com.drdrapp.webapp.model;
 
 import com.drdrapp.webapp.util.TestAnnotation;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Resume implements Comparable<Resume> {
-
     private final String uuid;
-    private final String fullName;
+    private String fullName;
+    private final Map<ContactType, String> contacts = new HashMap<>();
+    private final Map<SectionType, Section> sections = new HashMap<>();
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -29,10 +32,37 @@ public class Resume implements Comparable<Resume> {
         return fullName;
     }
 
-    @TestAnnotation
-    @Override
-    public String toString() {
-        return fullName + " {" + uuid + "}";
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void addContact(ContactType contactType, String val) {
+        contacts.put(contactType, val);
+    }
+
+    public String getContact(ContactType contactType) {
+        return contacts.get(contactType);
+    }
+
+    public void addSection(SectionType sectionType, Section section) {
+        sections.put(sectionType, section);
+    }
+
+    public Section getSection(SectionType sectionType) {
+        return sections.get(sectionType);
+    }
+
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sections;
+    }
+
+    public int compareTo(Resume r) {
+        int fullNameComparisonRes = fullName.compareTo(r.getFullName());
+        return (fullNameComparisonRes == 0) ? uuid.compareTo(r.getUuid()) : fullNameComparisonRes;
     }
 
     @Override
@@ -55,8 +85,10 @@ public class Resume implements Comparable<Resume> {
         return Objects.hash(uuid, fullName);
     }
 
+    @TestAnnotation
     @Override
-    public int compareTo(Resume r) {
-        return uuid.compareTo(r.uuid);
+    public String toString() {
+        return fullName + " {" + uuid + "}";
     }
+
 }

@@ -6,7 +6,7 @@ import com.drdrapp.webapp.model.Resume;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int MAX_COUNT_RESUME = 10000;
     protected final Resume[] storage = new Resume[MAX_COUNT_RESUME];
     protected int countResume = 0;
@@ -17,34 +17,34 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
+    protected boolean isExist(Integer searchKey) {
         return (int) searchKey >= 0;
     }
 
     @Override
-    protected void doSave(Resume r, Object searchKey) {
+    protected void doSave(Resume r, Integer searchKey) {
         if (MAX_COUNT_RESUME == countResume) {
             throw new StorageException("Error: storage is full.", r.getUuid());
         }
-        saveByIndex(r, (int) searchKey);
+        saveByIndex(r, searchKey);
         countResume++;
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        deleteByIndex((int) searchKey);
+    protected void doDelete(Integer searchKey) {
+        deleteByIndex(searchKey);
         storage[countResume - 1] = null;
         countResume--;
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return storage[(int) searchKey];
+    protected Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 
     @Override
-    protected void doUpdate(Resume r, Object searchKey) {
-        storage[(int) searchKey] = r;
+    protected void doUpdate(Resume r, Integer searchKey) {
+        storage[searchKey] = r;
     }
 
     public int size() {

@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class Reflection {
+public class TestReflection {
     public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Resume testResume = new Resume("Иванов Иван Иванович");
         Class<? extends Resume> testClass = testResume.getClass();
