@@ -1,6 +1,5 @@
 package com.drdrapp.webapp.model;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,71 +7,53 @@ import java.util.Objects;
 
 public class Organization implements Comparable<Organization>{
     private final Link title;
-    private final String jobTitle;
-    private final String description;
-    private final LocalDate dateFrom;
-    private final LocalDate dateTo;
+    private final List<Period> periods = new ArrayList<>();
 
-    public Organization(String organizationTitle, String organizationUrl, String jobTitle, String description, LocalDate dateFrom, LocalDate dateTo) {
+    public Organization(String organizationTitle, String organizationUrl, Period... periods) {
         Objects.requireNonNull(organizationTitle, "Title must not be null");
-        Objects.requireNonNull(dateFrom, "DateFrom must not be null");
-        Objects.requireNonNull(dateTo, "DateTo must not be null");
+        Objects.requireNonNull(periods, "Periods must not be null");
         this.title = new Link(organizationTitle, organizationUrl);
-        this.jobTitle = jobTitle;
-        this.description = description;
-        this.dateFrom = dateFrom;
-        this.dateTo = dateTo;
+        this.periods.addAll(List.of(periods));
     }
 
-    public Link getTitle(){
+    public Link getTitle() {
         return title;
-    };
+    }
 
-    public String jobTitle(){
-        return jobTitle;
-    };
-
-    public String getJobTitle(){
-        return jobTitle;
-    };
-
-    public LocalDate getDateFrom(){
-        return dateFrom;
-    };
-
-    public LocalDate getDateTo(){
-        return dateTo;
-    };
+    public List<Period> getPeriods() {
+        return periods;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Organization tmpOrg)) return false;
-        if (!title.equals(tmpOrg.title)) return false;
-        if (!dateFrom.equals(tmpOrg.dateFrom)) return false;
-        if (!dateTo.equals(tmpOrg.dateTo)) return false;
-        if (!(Objects.equals(jobTitle, tmpOrg.jobTitle))) return false;
-        return Objects.equals(description, tmpOrg.description);
+        return title.equals(tmpOrg.title) && periods.equals(tmpOrg.periods);
     }
+
     @Override
     public int hashCode() {
-        return Objects.hash(title, jobTitle, description,dateFrom, dateTo);
+        return Objects.hash(title, periods);
     }
 
     @Override
     public String toString() {
-
-        List<String> items = new ArrayList<String>();
-        items.add(title.getTitle());
-        items.add(String.format("с %s", YearMonth.from(dateFrom)) + String.format(" по %s", YearMonth.from(dateTo)));
-        if (!title.getUrl().isEmpty()){
-            items.add(title.getUrl());
+        List<String> items = new ArrayList<>();
+        items.add(title.getLinkTitle());
+        if (!title.getLinkUrl().isEmpty()) {
+            items.add(title.getLinkUrl());
         }
-        if (!jobTitle.isEmpty()){
-            items.add(jobTitle);
-        }
-        if (!description.isEmpty()){
-            items.add(description);
+        for (Period period : periods
+        ) {
+            items.add(period.getPosition());
+            if (period.getDescription() != null) {
+                items.add(period.getDescription());
+            }
+            if (period.getDateTo() == null) {
+                items.add(String.format("с %s", YearMonth.from(period.getDateFrom())) + " по н.в.");
+            } else {
+                items.add(String.format("с %s", YearMonth.from(period.getDateFrom())) + String.format(" по %s", YearMonth.from(period.getDateTo())));
+            }
         }
         return String.join("\n", items);
     }
@@ -80,8 +61,6 @@ public class Organization implements Comparable<Organization>{
     @Override
     public int compareTo(Organization o) {
         Objects.requireNonNull(o);
-        Objects.requireNonNull(o.dateFrom);
-        Objects.requireNonNull(o.dateTo);
-        return o.getDateFrom().compareTo(getDateFrom());
+        return o.title.getLinkTitle().compareTo(title.getLinkTitle());
     }
 }

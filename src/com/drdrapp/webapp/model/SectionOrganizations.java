@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class SectionOrganizations extends Section {
-
-    private final List<Organization> items = new ArrayList<>() {
-    };
+    private final List<Organization> items = new ArrayList<>();
 
     public void addItem(Organization item) {
         items.add(item);
@@ -19,7 +17,7 @@ public class SectionOrganizations extends Section {
     }
 
     public List<Organization> getItems() {
-        return items.stream().toList();
+        return items;
     }
 
     @Override

@@ -3,42 +3,38 @@ package com.drdrapp.webapp.model;
 import java.util.Objects;
 
 public class Link {
-    private final String title;
-    private final String url;
+    private final String linkTitle;
+    private final String linkUrl;
 
-    public Link(String title, String url) {
-        Objects.requireNonNull(title);
-        this.title = title;
-        this.url = url;
+    public Link(String linkTitle, String linkUrl) {
+        Objects.requireNonNull(linkTitle);
+        Objects.requireNonNull(linkUrl);
+        this.linkTitle = linkTitle;
+        this.linkUrl = linkUrl;
     }
 
-    public String getTitle() {
-        return title;
+    public String getLinkTitle() {
+        return linkTitle;
     }
 
-    public String getUrl() {
-        return url;
+    public String getLinkUrl() {
+        return linkUrl;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Link tmpLink)) return false;
-        return Objects.equals(title, tmpLink.title) && Objects.equals(url, tmpLink.url);
+        return Objects.equals(linkTitle, tmpLink.linkTitle) && Objects.equals(linkUrl, tmpLink.linkUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, url);
+        return Objects.hash(linkTitle, linkUrl);
     }
 
     @Override
     public String toString() {
-        if (url == null || url == "") {
-            return title;
-        } else {
-            return title + " <" + url + ">";
-        }
-
+        return linkTitle + " {" + linkUrl + "}";
     }
 }
