@@ -1,4 +1,4 @@
-package com.drdrapp.webapp.util;
+package com.drdrapp.webapp.test;
 
 import com.drdrapp.webapp.model.Resume;
 import com.drdrapp.webapp.storage.MapResumeStorage;

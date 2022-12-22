@@ -1,7 +1,5 @@
 package com.drdrapp.webapp.model;
 
-import com.drdrapp.webapp.util.TestAnnotation;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -11,7 +9,7 @@ public class Resume implements Comparable<Resume> {
     private final String uuid;
     private String fullName;
     private final Map<ContactType, String> contacts = new HashMap<>();
-    private final Map<SectionType, Section> sections = new HashMap<>();
+    private final Map<SectionType, AbstractSection> sections = new HashMap<>();
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -44,11 +42,11 @@ public class Resume implements Comparable<Resume> {
         return contacts.get(contactType);
     }
 
-    public void addSection(SectionType sectionType, Section section) {
-        sections.put(sectionType, section);
+    public void addSection(SectionType sectionType, AbstractSection abstractSection) {
+        sections.put(sectionType, abstractSection);
     }
 
-    public Section getSection(SectionType sectionType) {
+    public AbstractSection getSection(SectionType sectionType) {
         return sections.get(sectionType);
     }
 
@@ -56,7 +54,7 @@ public class Resume implements Comparable<Resume> {
         return contacts;
     }
 
-    public Map<SectionType, Section> getSections() {
+    public Map<SectionType, AbstractSection> getSections() {
         return sections;
     }
 
@@ -85,7 +83,6 @@ public class Resume implements Comparable<Resume> {
         return Objects.hash(uuid, fullName);
     }
 
-    @TestAnnotation
     @Override
     public String toString() {
         return fullName + " {" + uuid + "}";

@@ -2,10 +2,10 @@ package com.drdrapp.webapp.model;
 
 import java.util.Objects;
 
-public class SectionText extends Section {
+public class TextSection extends AbstractSection {
     private final String text;
 
-    public SectionText(String text) {
+    public TextSection(String text) {
         this.text = text;
     }
 
@@ -16,7 +16,7 @@ public class SectionText extends Section {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SectionText tmpSectionText)) return false;
+        if (!(o instanceof TextSection tmpSectionText)) return false;
         return text.equals(tmpSectionText.text);
     }
 

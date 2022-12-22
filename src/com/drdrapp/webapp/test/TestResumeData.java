@@ -1,4 +1,4 @@
-package com.drdrapp.webapp.util;
+package com.drdrapp.webapp.test;
 
 import com.drdrapp.webapp.model.*;
 
@@ -6,15 +6,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestResumeFillData {
+public class TestResumeData {
 
     public static void main(String[] args) {
-        Resume resumeTest1;
-        resumeTest1 = resumeCreate();
-        resumeFillContacts(resumeTest1);
-        resumeFillSectionText(resumeTest1);
-        resumeFillSectionList(resumeTest1);
-        resumeFillSectionOrganization(resumeTest1);
+        Resume resumeTest1 = resumeCreate("Иван Васильевич");
         System.out.println(resumeTest1);
         System.out.println("[Контакты]");
         for (var entry : resumeTest1.getContacts().entrySet()) {
@@ -26,8 +21,22 @@ public class TestResumeFillData {
         }
     }
 
-    private static Resume resumeCreate() {
-        return new Resume("Иван Васильевич");
+    public static Resume resumeCreate(String fullName) {
+        Resume r = new Resume(fullName);
+        resumeFillContacts(r);
+        resumeFillSectionText(r);
+        resumeFillSectionList(r);
+        resumeFillSectionOrganization(r);
+        return r;
+    }
+
+    public static Resume resumeCreate(String uuid, String fullName) {
+        Resume r = new Resume(uuid, fullName);
+        resumeFillContacts(r);
+        resumeFillSectionText(r);
+        resumeFillSectionList(r);
+        resumeFillSectionOrganization(r);
+        return r;
     }
 
     private static void resumeFillContacts(Resume r) {
@@ -43,8 +52,8 @@ public class TestResumeFillData {
     }
 
     private static void resumeFillSectionText(Resume r) {
-        r.addSection(SectionType.OBJECTIVE, new SectionText("Государь, Царь и Великий князь всея Руси"));
-        r.addSection(SectionType.PERSONAL, new SectionText("Великий, мудрый, креативный. Тиран."));
+        r.addSection(SectionType.OBJECTIVE, new TextSection("Государь, Царь и Великий князь всея Руси"));
+        r.addSection(SectionType.PERSONAL, new TextSection("Великий, мудрый, креативный. Тиран."));
     }
 
     private static void resumeFillSectionList(Resume r) {
@@ -55,16 +64,16 @@ public class TestResumeFillData {
         listAchievement.add("Создание в России первой регулярной армии – стрелецкого войска.");
         listAchievement.add("Создана система представительской демократии.");
         listAchievement.add("Создано книгопечатание и системное школьное образование.");
-        r.addSection(SectionType.ACHIEVEMENT, new SectionList(listAchievement));
+        r.addSection(SectionType.ACHIEVEMENT, new ListSection(listAchievement));
         final List<String> listQualifications = new ArrayList<>();
         listQualifications.add("Язык русский");
         listQualifications.add("Язык татаро-монгольский");
         listQualifications.add("Язык шведский");
-        r.addSection(SectionType.QUALIFICATIONS, new SectionList(listQualifications));
+        r.addSection(SectionType.QUALIFICATIONS, new ListSection(listQualifications));
     }
 
     private static void resumeFillSectionOrganization(Resume r) {
-        SectionOrganizations sectionExperience = new SectionOrganizations();
+        OrganizationsSection sectionExperience = new OrganizationsSection();
         r.addSection(SectionType.EXPERIENCE, sectionExperience);
         sectionExperience.addItem(new Organization(
                 "Правительство России",
@@ -84,7 +93,7 @@ public class TestResumeFillData {
                         LocalDate.of(1533, 12, 3),
                         LocalDate.of(1541, 1, 16))
         ));
-        SectionOrganizations sectionEducation = new SectionOrganizations();
+        OrganizationsSection sectionEducation = new OrganizationsSection();
         r.addSection(SectionType.EDUCATION, sectionEducation);
         sectionEducation.addItem(new Organization(
                 "Казанские походы",

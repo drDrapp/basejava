@@ -39,9 +39,9 @@ public class Organization implements Comparable<Organization>{
     @Override
     public String toString() {
         List<String> items = new ArrayList<>();
-        items.add(title.getLinkTitle());
-        if (!title.getLinkUrl().isEmpty()) {
-            items.add(title.getLinkUrl());
+        items.add(title.getTitle());
+        if (!title.getUrl().isEmpty()) {
+            items.add(title.getUrl());
         }
         for (Period period : periods
         ) {
@@ -61,6 +61,6 @@ public class Organization implements Comparable<Organization>{
     @Override
     public int compareTo(Organization o) {
         Objects.requireNonNull(o);
-        return o.title.getLinkTitle().compareTo(title.getLinkTitle());
+        return o.title.getTitle().compareTo(title.getTitle());
     }
 }
