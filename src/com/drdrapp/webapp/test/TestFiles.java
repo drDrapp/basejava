@@ -19,8 +19,7 @@ public class TestFiles {
         if (files == null) {
             return;
         }
-        for (File file : files
-        ) {
+        for (File file : files) {
             getFiles(file);
         }
     }

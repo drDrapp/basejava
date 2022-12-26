@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
-    private File directory;
+    private final File directory;
 
     public AbstractFileStorage(File directory) throws NotDirectoryException, FileNotFoundException {
         Objects.requireNonNull(directory);
@@ -86,9 +86,8 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         }
 
         List<Resume> allResume = new ArrayList<>();
-        for (File file : files
-        ) {
-           allResume.add(doGet(file));
+        for (File file : files) {
+            allResume.add(doGet(file));
         }
         return allResume;
     }
@@ -108,8 +107,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         if (files == null) {
             throw new StorageException("Directory reading error");
         }
-        for (File file : files
-        ) {
+        for (File file : files) {
             doDelete(file);
         }
     }

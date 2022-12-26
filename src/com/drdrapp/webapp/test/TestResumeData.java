@@ -78,7 +78,7 @@ public class TestResumeData {
         sectionExperience.addItem(new Organization(
                 "Правительство России",
                 "http://government.ru/",
-                new Period(
+                new Organization.Period(
                         "Государь, Царь и Великий князь всея Руси",
                         "Коронация 16 января 1547. Титул учреждён, он сам (как Государь и Великий князь всея Руси)",
                         LocalDate.of(1541, 1, 16),
@@ -87,7 +87,7 @@ public class TestResumeData {
         sectionExperience.addItem(new Organization(
                 "Правительство России",
                 "http://government.ru/",
-                new Period(
+                new Organization.Period(
                         "Государь и Великий князь Московский и всея Руси",
                         "Титул упразднён, он сам (как Государь, Царь и Великий князь всея Руси)",
                         LocalDate.of(1533, 12, 3),
@@ -98,7 +98,7 @@ public class TestResumeData {
         sectionEducation.addItem(new Organization(
                 "Казанские походы",
                 "",
-                new Period(
+                new Organization.Period(
                         "Полководец",
                         "Историю казанских походов часто отсчитывают от похода, состоявшегося в 1545 году, " +
                                 "который «носил характер военной демонстрации и усилил позиции „московской партии“ " +
@@ -113,7 +113,7 @@ public class TestResumeData {
         sectionEducation.addItem(new Organization(
                 "Астраханские походы",
                 "",
-                new Period(
+                new Organization.Period(
                         "Полководец",
                         "В начале 1550-х годов Астраханское ханство являлось союзником крымского хана, " +
                                 "контролируя нижнее течение Волги. До окончательного подчинения Астраханского ханства " +
@@ -124,7 +124,7 @@ public class TestResumeData {
         sectionEducation.addItem(new Organization(
                 "Война со Швецией",
                 "",
-                new Period(
+                new Organization.Period(
                         "Полководец",
                         "В годы правления Ивана Грозного были установлены торговые отношения России с Англией через " +
                                 "Белое море и Северный Ледовитый океан, сильно ударившие по экономическим интересам Швеции, " +
