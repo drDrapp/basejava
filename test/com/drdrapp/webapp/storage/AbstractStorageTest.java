@@ -3,10 +3,12 @@ package com.drdrapp.webapp.storage;
 import com.drdrapp.webapp.exeption.ExistStorageException;
 import com.drdrapp.webapp.exeption.NotExistStorageException;
 import com.drdrapp.webapp.model.Resume;
-import com.drdrapp.webapp.test.TestResumeData;
+import com.drdrapp.webapp.testdata.TestResumeData;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,9 +28,9 @@ abstract class AbstractStorageTest {
     protected static final Resume RESUME_2 = TestResumeData.resumeCreate(UUID_2, NAME_2);
     protected static final Resume RESUME_3 = TestResumeData.resumeCreate(UUID_3, NAME_3);
     protected static final Resume RESUME_4 = TestResumeData.resumeCreate(UUID_4, NAME_4);
+    protected static final File STORAGE_DIR = new File("C:\\Work\\Java\\basejava_storage");
 
     protected final AbstractStorage storage;
-
     protected int initialSize;
 
     public AbstractStorageTest(AbstractStorage storage) {
@@ -41,6 +43,11 @@ abstract class AbstractStorageTest {
         storage.save(RESUME_2);
         storage.save(RESUME_3);
         initialSize = 3;
+    }
+
+    @AfterEach
+    void clearDir() {
+        storage.clear();
     }
 
     @Test
@@ -84,7 +91,7 @@ abstract class AbstractStorageTest {
         storage.save(RESUME_4);
         Resume resumeForUpdate = new Resume(RESUME_4.getUuid(), NAME_4);
         storage.update(resumeForUpdate);
-        assertSame(storage.get(resumeForUpdate.getUuid()), resumeForUpdate);
+        assertEquals(resumeForUpdate, storage.get(UUID_4));
     }
 
     @Test

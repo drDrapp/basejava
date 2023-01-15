@@ -3,9 +3,7 @@ package com.drdrapp.webapp.storage;
 import com.drdrapp.webapp.exeption.StorageException;
 import com.drdrapp.webapp.model.Resume;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void doSave(Resume r, File searchKey) {
         try {
             if (searchKey.createNewFile()) {
-                doWrite(r, searchKey);
+                doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
             } else {
                 throw new StorageException("File '" + Path.of(searchKey.getPath()).getFileName().toString() + "' is not saved.", r.getUuid());
             }
@@ -63,7 +61,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File searchKey) {
         try {
-            return doRead(searchKey);
+            return doRead( new BufferedInputStream(new FileInputStream(searchKey)));
         } catch (IOException e) {
             throw new StorageException("The file " + searchKey.getPath() + " could not be read", "dummy", e);
         }
@@ -72,7 +70,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(Resume r, File searchKey) {
         try {
-            doWrite(r, searchKey);
+            doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
         } catch (IOException e) {
             throw new StorageException("File '" + Path.of(searchKey.getPath()).getFileName().toString() + "' can`t be updated.", r.getUuid(), e);
         }
@@ -112,8 +110,8 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         }
     }
 
-    protected abstract void doWrite(Resume r, File file) throws IOException;
+    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
 
-    protected abstract Resume doRead(File file) throws IOException;
+    protected abstract Resume doRead(InputStream is) throws IOException;
 
 }

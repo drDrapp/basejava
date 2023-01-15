@@ -1,18 +1,18 @@
-package com.drdrapp.webapp.test;
+package com.drdrapp.webapp.testdata;
 
 import java.io.File;
 import java.nio.file.Path;
 
 public class TestFiles {
     public static void main(String[] args) {
-        getFiles(new File("."));
+        getFiles(new File("."), "");
     }
 
-    private static void getFiles(File path) {
+    private static void getFiles(File path, String offset) {
         if (path.isDirectory()) {
-            System.out.println("DIR: " + path);
+            System.out.println(offset + "DIR: " + path);
         } else {
-            System.out.println("     " + Path.of(path.getPath()).getFileName().toString());
+            System.out.println(offset + "     " + Path.of(path.getPath()).getFileName().toString());
             return;
         }
         File[] files = path.listFiles();
@@ -20,7 +20,7 @@ public class TestFiles {
             return;
         }
         for (File file : files) {
-            getFiles(file);
+            getFiles(file, offset + "  ");
         }
     }
 }

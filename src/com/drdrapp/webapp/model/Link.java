@@ -1,8 +1,9 @@
 package com.drdrapp.webapp.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Link {
+public class Link implements Serializable {
     private final String title;
     private final String url;
 

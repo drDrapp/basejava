@@ -1,12 +1,13 @@
 package com.drdrapp.webapp.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Organization implements Comparable<Organization>{
+public class Organization implements Comparable<Organization>, Serializable {
     private final Link title;
     private final List<Period> periods = new ArrayList<>();
 
@@ -65,7 +66,7 @@ public class Organization implements Comparable<Organization>{
         return o.title.getTitle().compareTo(title.getTitle());
     }
 
-    public static class Period implements Comparable<Period> {
+    public static class Period implements Comparable<Period>, Serializable{
         private final String position;
         private final String description;
         private final LocalDate dateFrom;

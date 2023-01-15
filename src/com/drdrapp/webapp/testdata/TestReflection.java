@@ -1,4 +1,4 @@
-package com.drdrapp.webapp.test;
+package com.drdrapp.webapp.testdata;
 
 import com.drdrapp.webapp.model.Resume;
 
