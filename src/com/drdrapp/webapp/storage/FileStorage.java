@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
-
+public class FileStorage extends AbstractStorage<File> {
     private final File directory;
+    private final StreamSerializer streamSerializer;
 
-    public AbstractFileStorage(File directory) throws NotDirectoryException, FileNotFoundException {
+    public FileStorage(File directory, StreamSerializer streamSerializer) throws NotDirectoryException, FileNotFoundException {
         Objects.requireNonNull(directory);
+        this.streamSerializer = streamSerializer;
         if (!directory.exists()) {
             throw new FileNotFoundException("Directory is not exist: " + directory.getAbsolutePath());
         }
@@ -42,7 +43,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void doSave(Resume r, File searchKey) {
         try {
             if (searchKey.createNewFile()) {
-                doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
+                streamSerializer.doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
             } else {
                 throw new StorageException("File '" + Path.of(searchKey.getPath()).getFileName().toString() + "' is not saved.", r.getUuid());
             }
@@ -61,7 +62,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File searchKey) {
         try {
-            return doRead( new BufferedInputStream(new FileInputStream(searchKey)));
+            return streamSerializer.doRead( new BufferedInputStream(new FileInputStream(searchKey)));
         } catch (IOException e) {
             throw new StorageException("The file " + searchKey.getPath() + " could not be read", "dummy", e);
         }
@@ -70,7 +71,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(Resume r, File searchKey) {
         try {
-            doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
+            streamSerializer.doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
         } catch (IOException e) {
             throw new StorageException("File '" + Path.of(searchKey.getPath()).getFileName().toString() + "' can`t be updated.", r.getUuid(), e);
         }
@@ -109,9 +110,5 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             doDelete(file);
         }
     }
-
-    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
-
-    protected abstract Resume doRead(InputStream is) throws IOException;
 
 }
