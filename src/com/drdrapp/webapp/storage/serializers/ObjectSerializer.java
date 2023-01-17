@@ -1,11 +1,11 @@
-package com.drdrapp.webapp.storage;
+package com.drdrapp.webapp.storage.serializers;
 
 import com.drdrapp.webapp.exeption.StorageException;
 import com.drdrapp.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamStorage implements StreamSerializer {
+public class ObjectSerializer implements SerializationStrategy {
 
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {

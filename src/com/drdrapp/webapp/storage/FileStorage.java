@@ -2,21 +2,23 @@ package com.drdrapp.webapp.storage;
 
 import com.drdrapp.webapp.exeption.StorageException;
 import com.drdrapp.webapp.model.Resume;
+import com.drdrapp.webapp.storage.serializers.SerializationStrategy;
 
 import java.io.*;
 import java.nio.file.NotDirectoryException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.stream;
 
 public class FileStorage extends AbstractStorage<File> {
     private final File directory;
-    private final StreamSerializer streamSerializer;
+    private final SerializationStrategy serializationStrategy;
 
-    public FileStorage(File directory, StreamSerializer streamSerializer) throws NotDirectoryException, FileNotFoundException {
+    public FileStorage(File directory, SerializationStrategy serializationStrategy) throws NotDirectoryException, FileNotFoundException {
         Objects.requireNonNull(directory);
-        this.streamSerializer = streamSerializer;
+        this.serializationStrategy = serializationStrategy;
         if (!directory.exists()) {
             throw new FileNotFoundException("Directory is not exist: " + directory.getAbsolutePath());
         }
@@ -42,73 +44,59 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected void doSave(Resume r, File searchKey) {
         try {
-            if (searchKey.createNewFile()) {
-                streamSerializer.doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
-            } else {
-                throw new StorageException("File '" + Path.of(searchKey.getPath()).getFileName().toString() + "' is not saved.", r.getUuid());
-            }
+            searchKey.createNewFile();
         } catch (IOException e) {
-            throw new StorageException("File '" + Path.of(searchKey.getPath()).getFileName().toString() + "' is not saved.", r.getUuid(), e);
+            throw new StorageException("File '" + searchKey.getAbsolutePath() + "' is not saved.", r.getUuid(), e);
         }
+        doUpdate(r, searchKey);
     }
 
     @Override
     protected void doDelete(File searchKey) {
         if (!searchKey.delete()) {
-            throw new StorageException("File '" + searchKey + "' is not deleted.", Path.of(searchKey.getPath()).getFileName().toString());
+            throw new StorageException("File '" + searchKey.getAbsolutePath() + "' is not deleted.");
         }
     }
 
     @Override
     protected Resume doGet(File searchKey) {
         try {
-            return streamSerializer.doRead( new BufferedInputStream(new FileInputStream(searchKey)));
+            return serializationStrategy.doRead( new BufferedInputStream(new FileInputStream(searchKey)));
         } catch (IOException e) {
-            throw new StorageException("The file " + searchKey.getPath() + " could not be read", "dummy", e);
+            throw new StorageException("File '" + searchKey.getAbsolutePath() + "' could not be read.", null, e);
         }
     }
 
     @Override
     protected void doUpdate(Resume r, File searchKey) {
         try {
-            streamSerializer.doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
+            serializationStrategy.doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey)));
         } catch (IOException e) {
-            throw new StorageException("File '" + Path.of(searchKey.getPath()).getFileName().toString() + "' can`t be updated.", r.getUuid(), e);
+            throw new StorageException("File '" + searchKey.getAbsolutePath() + "' is not updated.", r.getUuid(), e);
         }
     }
 
     @Override
     protected List<Resume> doGetAll() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory reading error");
-        }
-
-        List<Resume> allResume = new ArrayList<>();
-        for (File file : files) {
-            allResume.add(doGet(file));
-        }
-        return allResume;
+        return stream(getFilesList()).map(this::doGet).collect(Collectors.toList());
     }
 
     @Override
     public int size() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory reading error");
-        }
-        return files.length;
+        return getFilesList().length;
     }
 
     @Override
     public void clear() {
+        stream(getFilesList()).forEach(this::doDelete);
+    }
+
+    private File[] getFilesList(){
         File[] files = directory.listFiles();
         if (files == null) {
             throw new StorageException("Directory reading error");
         }
-        for (File file : files) {
-            doDelete(file);
-        }
+        return files;
     }
 
 }

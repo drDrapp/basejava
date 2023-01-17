@@ -2,6 +2,7 @@ package com.drdrapp.webapp.storage;
 
 import com.drdrapp.webapp.exeption.StorageException;
 import com.drdrapp.webapp.model.Resume;
+import com.drdrapp.webapp.storage.serializers.SerializationStrategy;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -15,10 +16,10 @@ import java.util.stream.Stream;
 public class PathStorage extends AbstractStorage<Path> {
 
     private final Path directory;
-    private final StreamSerializer streamSerializer;
+    private final SerializationStrategy serializationStrategy;
 
-    public PathStorage(Path directory, StreamSerializer streamSerializer) throws NotDirectoryException, FileNotFoundException {
-        this.streamSerializer = streamSerializer;
+    public PathStorage(Path directory, SerializationStrategy serializationStrategy) throws NotDirectoryException, FileNotFoundException {
+        this.serializationStrategy = serializationStrategy;
         Objects.requireNonNull(directory);
         if (!Files.exists(directory)) {
             throw new FileNotFoundException(directory.toAbsolutePath().toString());
@@ -46,10 +47,10 @@ public class PathStorage extends AbstractStorage<Path> {
     protected void doSave(Resume r, Path searchKey) {
         try {
             Files.createFile(searchKey);
-            streamSerializer.doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey.toFile())));
         } catch (IOException e) {
-            throw new StorageException("File '" + searchKey.getFileName() + "' could not be created", r.getUuid(), e);
+            throw new StorageException("File '" + searchKey.getFileName() + "' is not saved.", r.getUuid(), e);
         }
+        doUpdate(r, searchKey);
     }
 
     @Override
@@ -57,25 +58,25 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.delete(searchKey);
         } catch (IOException e) {
-            throw new StorageException("File '" + searchKey.getFileName() + "' not deleted", null, e);
+            throw new StorageException("File '" + searchKey.getFileName() + "' is not deleted.", null, e);
         }
     }
 
     @Override
     protected Resume doGet(Path searchKey) {
         try {
-            return streamSerializer.doRead(new BufferedInputStream(new FileInputStream(searchKey.toFile())));
+            return serializationStrategy.doRead(new BufferedInputStream(new FileInputStream(searchKey.toFile())));
         } catch (IOException e) {
-            throw new StorageException("File '" + searchKey.getFileName() + "' could not be read", null, e);
+            throw new StorageException("File '" + searchKey.getFileName() + "' could not be read.", null, e);
         }
     }
 
     @Override
     protected void doUpdate(Resume r, Path searchKey) {
         try {
-            streamSerializer.doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey.toFile())));
+            serializationStrategy.doWrite(r, new BufferedOutputStream(new FileOutputStream(searchKey.toFile())));
         } catch (IOException e) {
-            throw new StorageException("File '" + searchKey.getFileName() + "' could not be changed", r.getUuid(), e);
+            throw new StorageException("File '" + searchKey.getFileName() + "' is not updated.", r.getUuid(), e);
         }
     }
 
