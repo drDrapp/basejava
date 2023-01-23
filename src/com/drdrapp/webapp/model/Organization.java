@@ -1,5 +1,10 @@
 package com.drdrapp.webapp.model;
 
+import com.drdrapp.webapp.util.XmlLocalDateAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -7,9 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Comparable<Organization>, Serializable {
-    private final Link title;
+    private Link title;
     private final List<Period> periods = new ArrayList<>();
+
+    public Organization() {
+    }
 
     public Organization(String organizationTitle, String organizationUrl, Period... periods) {
         Objects.requireNonNull(organizationTitle, "Title must not be null");
@@ -66,11 +75,17 @@ public class Organization implements Comparable<Organization>, Serializable {
         return o.title.getTitle().compareTo(title.getTitle());
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Comparable<Period>, Serializable{
-        private final String position;
-        private final String description;
-        private final LocalDate dateFrom;
-        private final LocalDate dateTo;
+        private String position;
+        private String description;
+        @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
+        private LocalDate dateFrom;
+        @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
+        private LocalDate dateTo;
+
+        public Period() {
+        }
 
         public Period(String position, String description, LocalDate dateFrom, LocalDate dateTo) {
             Objects.requireNonNull(position, "Position must not be null");

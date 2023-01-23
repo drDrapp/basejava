@@ -8,6 +8,9 @@ import java.util.Objects;
 public class OrganizationsSection extends AbstractSection {
     private final List<Organization> organizations = new ArrayList<>();
 
+    public OrganizationsSection() {
+    }
+
     public void addItem(Organization item) {
         organizations.add(item);
     }

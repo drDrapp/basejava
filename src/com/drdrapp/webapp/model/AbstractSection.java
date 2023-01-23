@@ -1,5 +1,8 @@
 package com.drdrapp.webapp.model;
 
-import java.io.Serializable;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
+import java.io.Serializable;
+@XmlAccessorType(XmlAccessType.FIELD)
 abstract public class AbstractSection implements Serializable {}

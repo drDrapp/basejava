@@ -5,9 +5,9 @@ import com.drdrapp.webapp.storage.serializers.ObjectSerializer;
 import java.io.FileNotFoundException;
 import java.nio.file.NotDirectoryException;
 
-class FileStorageTest extends AbstractStorageTest {
+class ObejectFileStorageTest extends AbstractStorageTest {
 
-    public FileStorageTest() throws NotDirectoryException, FileNotFoundException {
+    public ObejectFileStorageTest() throws NotDirectoryException, FileNotFoundException {
         super(new FileStorage(STORAGE_DIR, new ObjectSerializer()));
     }
 

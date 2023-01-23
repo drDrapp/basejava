@@ -1,11 +1,18 @@
 package com.drdrapp.webapp.model;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Link implements Serializable {
-    private final String title;
-    private final String url;
+    private String title;
+    private String url;
+
+    public Link() {
+    }
 
     public Link(String linkTitle, String linkUrl) {
         Objects.requireNonNull(linkTitle);

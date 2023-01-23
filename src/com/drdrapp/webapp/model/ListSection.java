@@ -7,11 +7,11 @@ import java.util.Objects;
 public class ListSection extends AbstractSection {
     private List<String> items = new ArrayList<>();
 
-    public ListSection(List<String> items) {
-        this.items = items;
+    public ListSection() {
     }
 
-    public ListSection() {
+    public ListSection(List<String> items) {
+        this.items = items;
     }
 
     public void addItem(String listItem) {
