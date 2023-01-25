@@ -5,10 +5,7 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -69,8 +66,8 @@ public class Resume implements Comparable<Resume>, Serializable {
     }
 
     public int compareTo(Resume r) {
-        int fullNameComparisonRes = fullName.compareTo(r.getFullName());
-        return (fullNameComparisonRes == 0) ? uuid.compareTo(r.getUuid()) : fullNameComparisonRes;
+        int cmp = fullName.compareTo(r.fullName);
+        return cmp != 0 ? cmp : uuid.compareTo(r.uuid);
     }
 
     @Override
@@ -91,7 +88,7 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     @Override
     public String toString() {
-        return fullName + " {" + uuid + "}";
+        return uuid + '(' + fullName + ')';
     }
 
 }

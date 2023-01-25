@@ -6,9 +6,18 @@ import java.util.List;
 import java.util.Objects;
 
 public class OrganizationsSection extends AbstractSection {
-    private final List<Organization> organizations = new ArrayList<>();
+    private List<Organization> organizations = new ArrayList<>();
 
     public OrganizationsSection() {
+    }
+
+    public OrganizationsSection(Organization... organizations) {
+        this(Arrays.asList(organizations));
+    }
+
+    public OrganizationsSection(List<Organization> organizations) {
+        Objects.requireNonNull(organizations, "Organizations must not be null");
+        this.organizations = organizations;
     }
 
     public void addItem(Organization item) {
@@ -26,8 +35,9 @@ public class OrganizationsSection extends AbstractSection {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OrganizationsSection tmpSectionOrganizations)) return false;
-        return Objects.equals(organizations, tmpSectionOrganizations.organizations);
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationsSection that = (OrganizationsSection) o;
+        return Objects.equals(organizations, that.organizations);
     }
 
     @Override

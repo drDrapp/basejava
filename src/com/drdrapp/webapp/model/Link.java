@@ -16,9 +16,8 @@ public class Link implements Serializable {
 
     public Link(String linkTitle, String linkUrl) {
         Objects.requireNonNull(linkTitle);
-        Objects.requireNonNull(linkUrl);
         this.title = linkTitle;
-        this.url = linkUrl;
+        this.url = linkUrl == null ? "" : linkUrl;
     }
 
     public String getTitle() {
@@ -32,8 +31,9 @@ public class Link implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Link tmpLink)) return false;
-        return Objects.equals(title, tmpLink.title) && Objects.equals(url, tmpLink.url);
+        if (o == null || getClass() != o.getClass()) return false;
+        Link link = (Link) o;
+        return title.equals(link.title) && Objects.equals(url, link.url);
     }
 
     @Override

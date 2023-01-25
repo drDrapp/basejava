@@ -15,7 +15,7 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Comparable<Organization>, Serializable {
     private Link title;
-    private final List<Period> periods = new ArrayList<>();
+    private List<Period> periods = new ArrayList<>();
 
     public Organization() {
     }
@@ -25,6 +25,11 @@ public class Organization implements Comparable<Organization>, Serializable {
         Objects.requireNonNull(periods, "Periods must not be null");
         this.title = new Link(organizationTitle, organizationUrl);
         this.periods.addAll(List.of(periods));
+    }
+
+    public Organization(String organizationTitle, String organizationUrl, List<Period> periods) {
+        this.title = new Link(organizationTitle, organizationUrl);
+        this.periods = periods;
     }
 
     public Link getTitle() {
@@ -38,8 +43,9 @@ public class Organization implements Comparable<Organization>, Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Organization tmpOrg)) return false;
-        return title.equals(tmpOrg.title) && periods.equals(tmpOrg.periods);
+        if (o == null || getClass() != o.getClass()) return false;
+        Organization that = (Organization) o;
+        return title.equals(that.title) && periods.equals(that.periods);
     }
 
     @Override
@@ -89,9 +95,9 @@ public class Organization implements Comparable<Organization>, Serializable {
 
         public Period(String position, String description, LocalDate dateFrom, LocalDate dateTo) {
             Objects.requireNonNull(position, "Position must not be null");
-            Objects.requireNonNull(dateFrom, "dateFrom must not be null");
+            Objects.requireNonNull(dateFrom, "DateFrom must not be null");
             this.position = position;
-            this.description = description;
+            this.description = description == null ? "" : description;
             this.dateFrom = dateFrom;
             this.dateTo = dateTo;
         }
@@ -119,7 +125,8 @@ public class Organization implements Comparable<Organization>, Serializable {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof Period period)) return false;
+            if (o == null || getClass() != o.getClass()) return false;
+            Period period = (Period) o;
             return Objects.equals(position, period.position) &&
                     Objects.equals(description, period.description) &&
                     Objects.equals(dateFrom, period.dateFrom) &&
