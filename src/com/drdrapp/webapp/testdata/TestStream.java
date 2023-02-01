@@ -3,6 +3,8 @@ package com.drdrapp.webapp.testdata;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TestStream {
 
@@ -17,7 +19,7 @@ public class TestStream {
                         .sum());
         System.out.println("Task 1 result: " + minValue(values));
         System.out.println("Task 2 result: " +
-                oddOrEven_fix1(Arrays.stream(values)
+                oddOrEven_map(Arrays.stream(values)
                         .boxed()
                         .toList()));
     }
@@ -54,29 +56,26 @@ public class TestStream {
         return (sum % 2 == 0) ? listOfEven : listOfOdd;
     }
 
-    public static List<Integer> oddOrEven_fix1(List<Integer> values) {
+    public static List<Integer> oddOrEven_filter(List<Integer> values) {
         boolean oddToOut = values.stream()
                 .mapToInt(i -> i)
                 .sum() % 2 == 0;
         return oddToOut ?
                 values.stream()
-                        .filter(v -> v % 2 != 0)
+                        .filter(i -> i % 2 != 0)
                         .toList() :
                 values.stream()
-                        .filter(v -> v % 2 == 0)
+                        .filter(i -> i % 2 == 0)
                         .toList();
     }
 
-    public static List<Integer> oddOrEven_fix2(List<Integer> values) {
-        return values.stream()
-                .mapToInt(i -> i)
-                .sum() % 2 == 0 ?
+    public static List<Integer> oddOrEven_map(List<Integer> values) {
+        Map<Boolean, List<Integer>> mapValues =
                 values.stream()
-                        .filter(v -> v % 2 != 0)
-                        .toList() :
-                values.stream()
-                        .filter(v -> v % 2 == 0)
-                        .toList();
+                        .collect(Collectors.partitioningBy(i -> i % 2 == 0));
+        return (mapValues.get(false).size() % 2 == 0) ?
+                mapValues.get(false) :
+                mapValues.get(true);
     }
 
 }
