@@ -39,6 +39,11 @@ public class TestResumeData {
         return r;
     }
 
+    public static Resume resumeCreate4SQL(String uuid, String fullName) {
+        Resume r = new Resume(uuid, fullName);
+        return r;
+    }
+
     private static void resumeFillContacts(Resume r) {
         r.addContact(ContactType.PHONE, "+7 (495) 606–36–02");
         r.addContact(ContactType.PHONE_MOBILE, "+7 (920) 777-77-777");

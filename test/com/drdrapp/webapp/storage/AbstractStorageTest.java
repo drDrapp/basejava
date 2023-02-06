@@ -1,5 +1,6 @@
 package com.drdrapp.webapp.storage;
 
+import com.drdrapp.webapp.Config;
 import com.drdrapp.webapp.exeption.ExistStorageException;
 import com.drdrapp.webapp.exeption.NotExistStorageException;
 import com.drdrapp.webapp.model.Resume;
@@ -11,30 +12,31 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 abstract class AbstractStorageTest {
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
     private static final String DUMMY = "dummy";
     private static final String NAME_1 = "Дульсинея Тобосская";
     private static final String NAME_2 = "Евлампий Агапов";
     private static final String NAME_3 = "Эдуард Суровый";
     private static final String NAME_4 = "Виниамин Дорохов";
-    protected static final Resume RESUME_1 = TestResumeData.resumeCreate(UUID_1, NAME_1);
-    protected static final Resume RESUME_2 = TestResumeData.resumeCreate(UUID_2, NAME_2);
-    protected static final Resume RESUME_3 = TestResumeData.resumeCreate(UUID_3, NAME_3);
-    protected static final Resume RESUME_4 = TestResumeData.resumeCreate(UUID_4, NAME_4);
-    protected static final File STORAGE_DIR = new File("C:\\Work\\Java\\basejava_storage");
+    protected static final Resume RESUME_1 = TestResumeData.resumeCreate4SQL(UUID_1, NAME_1);
+    protected static final Resume RESUME_2 = TestResumeData.resumeCreate4SQL(UUID_2, NAME_2);
+    protected static final Resume RESUME_3 = TestResumeData.resumeCreate4SQL(UUID_3, NAME_3);
+    protected static final Resume RESUME_4 = TestResumeData.resumeCreate4SQL(UUID_4, NAME_4);
+    protected static final File STORAGE_DIR = Config.getInstance().getStorageDir();
 
-    protected final AbstractStorage storage;
+    protected final Storage storage;
     protected int initialSize;
 
-    public AbstractStorageTest(AbstractStorage storage) {
+    public AbstractStorageTest(Storage storage) {
         this.storage = storage;
     }
 
