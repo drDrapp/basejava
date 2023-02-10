@@ -1,32 +1,32 @@
-drop table if exists contact;
-drop table if exists resume;
+DROP TABLE IF EXISTS contact;
+DROP TABLE IF EXISTS resume;
 
-create table resume
+CREATE TABLE resume
 (
-    uuid      char(36) not null
-        constraint resume_pk
-            primary key,
-    full_name text     not null
+    uuid      CHAR(36) NOT NULL
+        CONSTRAINT resume_pk
+            PRIMARY KEY,
+    full_name TEXT     NOT NULL
 );
 
-create table contact
+CREATE TABLE contact
 (
-    id          serial
-        constraint contact_pk
-            primary key,
-    resume_uuid char(36) not null
-        constraint contact_resume_uuid_fk
-            references resume
-            on update restrict on delete cascade,
-    type        text     not null,
-    value       text     not null
+    id          SERIAL
+        CONSTRAINT contact_pk
+            PRIMARY KEY,
+    resume_uuid CHAR(36) NOT NULL
+        CONSTRAINT contact_resume_uuid_fk
+            REFERENCES resume
+            ON UPDATE RESTRICT ON DELETE CASCADE,
+    type        TEXT     NOT NULL,
+    value       TEXT     NOT NULL
 );
 
-create unique index contact_resume_uuid_type_index
-    on contact (resume_uuid, type);
+CREATE UNIQUE INDEX contact_resume_uuid_type_index
+    ON contact (resume_uuid, type);
 
-alter table if exists resume
-    owner to postgres;
+ALTER TABLE IF EXISTS resume
+    OWNER TO postgres;
 
-alter table contact
-    owner to postgres;
+ALTER TABLE contact
+    OWNER TO postgres;

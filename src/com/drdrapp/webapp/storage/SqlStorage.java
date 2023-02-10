@@ -1,11 +1,11 @@
 package com.drdrapp.webapp.storage;
 
 import com.drdrapp.webapp.exeption.NotExistStorageException;
+import com.drdrapp.webapp.model.ContactType;
 import com.drdrapp.webapp.model.Resume;
 import com.drdrapp.webapp.sql.SqlHelper;
 
-import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,71 +18,147 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume r) {
-        sqlHelper.<Void>command("insert into resume as r (uuid, full_name) values (?, ?)", ps -> {
-            ps.setString(1, r.getUuid());
-            ps.setString(2, r.getFullName());
-            ps.execute();
-            return null;
-        });
+        sqlHelper.transactionExecute(connection -> {
+                    insertResume(connection, r);
+                    insertContacts(connection, r);
+                    return null;
+                }
+        );
     }
 
     @Override
     public void delete(String uuid) {
-        sqlHelper.command("delete from resume as r where r.uuid = ?", ps -> {
-            ps.setString(1, uuid);
-            if (ps.executeUpdate() == 0) {
-                throw new NotExistStorageException(uuid);
-            }
-            return null;
-        });
+        sqlHelper.command("DELETE FROM resume WHERE uuid = ?",
+                sqlBox -> {
+                    sqlBox.setString(1, uuid);
+                    if (sqlBox.executeUpdate() == 0) {
+                        throw new NotExistStorageException(uuid);
+                    }
+                    return null;
+                });
     }
 
     @Override
     public Resume get(String uuid) {
-        return sqlHelper.command("select uuid, full_name from resume as r where r.uuid = ?", ps -> {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new NotExistStorageException(uuid);
-            }
-            return new Resume(uuid, rs.getString("full_name"));
-        });
+        return sqlHelper.transactionExecute((connection) -> selectFullResume(uuid, connection));
     }
 
     @Override
     public void update(Resume r) {
-        sqlHelper.command("update resume as r set full_name = ? where r.uuid = ?", ps -> {
-            ps.setString(1, r.getFullName());
-            ps.setString(2, r.getUuid());
-            if (ps.executeUpdate() == 0) {
-                throw new NotExistStorageException(r.getUuid());
-            }
+        sqlHelper.transactionExecute((connection) -> {
+            updateResume(connection, r);
+            updateContacts(connection, r);
             return null;
         });
     }
 
     @Override
     public int size() {
-        return sqlHelper.command("select count(uuid) as cc from resume as r", ps -> {
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getInt("cc") : 0;
-        });
+        return sqlHelper.command("SELECT COUNT(uuid) AS cc FROM resume",
+                sqlBox -> {
+                    ResultSet sqlResult = sqlBox.executeQuery();
+                    return sqlResult.next() ? sqlResult.getInt("cc") : 0;
+                });
     }
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.command("select uuid, full_name from resume as r order by r.full_name, r.uuid", ps -> {
-            ResultSet rs = ps.executeQuery();
-            List<Resume> resumes = new ArrayList<>();
-            while (rs.next()) {
-                resumes.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
-            }
-            return resumes;
-        });
+        return sqlHelper.command("" +
+                        "SELECT r.uuid, r.full_name, c.type, c.value " +
+                        "  FROM resume r " +
+                        "  LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
+                        " ORDER BY full_name, uuid",
+                sqlBox -> {
+                    ResultSet sqlResult = sqlBox.executeQuery();
+                    List<Resume> resumes = new ArrayList<>();
+                    String oldUUID = "";
+                    Resume r = null;
+                    while (sqlResult.next()) {
+                        String currentUUID = sqlResult.getString("uuid");
+                        if (!currentUUID.equals(oldUUID)){
+                            r = new Resume(currentUUID, sqlResult.getString("full_name"));
+                            resumes.add(r);
+                            oldUUID = currentUUID;
+                        }
+                        if (sqlResult.getString("type") != null) {
+                            r.addContact(ContactType.valueOf(sqlResult.getString("type")), sqlResult.getString("value"));
+                        }
+                    }
+                    return resumes;
+                });
     }
-
     @Override
     public void clear() {
-        sqlHelper.command("delete from resume as r");
+        sqlHelper.command("DELETE FROM resume");
     }
+
+    private static Resume selectFullResume(String uuid, Connection connection) throws SQLException {
+        Resume r = selectResume(uuid, connection);
+        selectContacts(connection, r);
+        return r;
+    }
+
+    private static Resume selectResume(String uuid, Connection connection) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("SELECT uuid, full_name FROM resume WHERE uuid =?")) {
+            sqlBox.setString(1, uuid);
+            ResultSet sqlResult = sqlBox.executeQuery();
+            if (!sqlResult.next()) {
+                throw new NotExistStorageException(uuid);
+            }
+            return new Resume(sqlResult.getString("uuid"), sqlResult.getString("full_name"));
+        }
+    }
+
+    private static void insertResume(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)")) {
+            sqlBox.setString(1, r.getUuid());
+            sqlBox.setString(2, r.getFullName());
+            sqlBox.execute();
+        }
+    }
+
+    private static void updateResume(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid =?")) {
+            sqlBox.setString(1, r.getFullName());
+            sqlBox.setString(2, r.getUuid());
+            if (sqlBox.executeUpdate() == 0) {
+                throw new NotExistStorageException(r.getUuid());
+            }
+        }
+    }
+
+    private static void selectContacts(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("SELECT type, value FROM contact WHERE resume_uuid =?")) {
+            sqlBox.setString(1, r.getUuid());
+            ResultSet sqlResult = sqlBox.executeQuery();
+            while (sqlResult.next()) {
+                r.addContact(ContactType.valueOf(sqlResult.getString("type")), sqlResult.getString("value"));
+            }
+        }
+    }
+
+    private static void deleteContacts(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("DELETE FROM contact WHERE resume_uuid =?")) {
+            sqlBox.setString(1, r.getUuid());
+            sqlBox.executeUpdate();
+        }
+    }
+
+    private static void insertContacts(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("INSERT INTO contact VALUES (DEFAULT,?,?,?)")) {
+            for (var contact : r.getContacts().entrySet()) {
+                sqlBox.setString(1, r.getUuid());
+                sqlBox.setString(2, contact.getKey().name());
+                sqlBox.setString(3, contact.getValue());
+                sqlBox.addBatch();
+            }
+            sqlBox.executeBatch();
+        }
+    }
+
+    private static void updateContacts(Connection connection, Resume r) throws SQLException {
+        deleteContacts(connection, r);
+        insertContacts(connection, r);
+    }
+
 }

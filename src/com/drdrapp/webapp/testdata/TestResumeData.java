@@ -41,6 +41,7 @@ public class TestResumeData {
 
     public static Resume resumeCreate4SQL(String uuid, String fullName) {
         Resume r = new Resume(uuid, fullName);
+        resumeFillContacts(r);
         return r;
     }
 
