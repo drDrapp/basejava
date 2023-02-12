@@ -7,7 +7,9 @@ import com.drdrapp.webapp.sql.SqlHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
@@ -70,21 +72,19 @@ public class SqlStorage implements Storage {
                         " ORDER BY full_name, uuid",
                 sqlBox -> {
                     ResultSet sqlResult = sqlBox.executeQuery();
-                    List<Resume> resumes = new ArrayList<>();
-                    String oldUUID = "";
-                    Resume r = null;
+                    Map<String, Resume> resumes_map = new HashMap<>();
                     while (sqlResult.next()) {
                         String currentUUID = sqlResult.getString("uuid");
-                        if (!currentUUID.equals(oldUUID)){
+                        Resume r = resumes_map.get(currentUUID);
+                        if (r == null) {
                             r = new Resume(currentUUID, sqlResult.getString("full_name"));
-                            resumes.add(r);
-                            oldUUID = currentUUID;
+                            resumes_map.put(currentUUID, r);
                         }
                         if (sqlResult.getString("type") != null) {
-                            r.addContact(ContactType.valueOf(sqlResult.getString("type")), sqlResult.getString("value"));
+                            addContact(r, sqlResult);
                         }
                     }
-                    return resumes;
+                    return new ArrayList<>(resumes_map.values());
                 });
     }
     @Override
@@ -132,9 +132,13 @@ public class SqlStorage implements Storage {
             sqlBox.setString(1, r.getUuid());
             ResultSet sqlResult = sqlBox.executeQuery();
             while (sqlResult.next()) {
-                r.addContact(ContactType.valueOf(sqlResult.getString("type")), sqlResult.getString("value"));
+                addContact(r, sqlResult);
             }
         }
+    }
+
+    private static void addContact(Resume r, ResultSet sqlResult) throws SQLException {
+        r.addContact(ContactType.valueOf(sqlResult.getString("type")), sqlResult.getString("value"));
     }
 
     private static void deleteContacts(Connection connection, Resume r) throws SQLException {
