@@ -6,10 +6,7 @@ import com.drdrapp.webapp.model.Resume;
 import com.drdrapp.webapp.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
@@ -72,7 +69,7 @@ public class SqlStorage implements Storage {
                         " ORDER BY full_name, uuid",
                 sqlBox -> {
                     ResultSet sqlResult = sqlBox.executeQuery();
-                    Map<String, Resume> resumes_map = new HashMap<>();
+                    Map<String, Resume> resumes_map = new LinkedHashMap<>();
                     while (sqlResult.next()) {
                         String currentUUID = sqlResult.getString("uuid");
                         Resume r = resumes_map.get(currentUUID);
