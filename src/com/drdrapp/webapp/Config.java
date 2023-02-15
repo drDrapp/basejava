@@ -2,11 +2,9 @@ package com.drdrapp.webapp;
 
 import com.drdrapp.webapp.storage.SqlStorage;
 import com.drdrapp.webapp.storage.Storage;
+import com.drdrapp.webapp.web.ResumeServlet;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class Config {
@@ -16,7 +14,7 @@ public class Config {
     private final Storage storage;
 
     private Config() {
-        try (InputStream is = new FileInputStream(PROPERTIES_DIR)) {
+        try (InputStream is = getRunContextInputStream()) {
             Properties properties = new Properties();
             properties.load(is);
             storageDir = new File(properties.getProperty("storage.dir"));
@@ -39,5 +37,11 @@ public class Config {
 
     public Storage getStorage() {
         return storage;
+    }
+
+    private InputStream getRunContextInputStream() throws FileNotFoundException {
+        return (ResumeServlet.getContext() == null) ?
+                new FileInputStream(PROPERTIES_DIR) :
+                ResumeServlet.getContext().getResourceAsStream("/" + PROPERTIES_DIR);
     }
 }

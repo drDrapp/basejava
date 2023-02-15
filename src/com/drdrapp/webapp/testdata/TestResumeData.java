@@ -42,10 +42,12 @@ public class TestResumeData {
     public static Resume resumeCreate4SQL(String uuid, String fullName) {
         Resume r = new Resume(uuid, fullName);
         resumeFillContacts(r);
+        resumeFillSectionText(r);
+        resumeFillSectionList(r);
         return r;
     }
 
-    private static void resumeFillContacts(Resume r) {
+    public static void resumeFillContacts(Resume r) {
         r.addContact(ContactType.PHONE, "+7 (495) 606–36–02");
         r.addContact(ContactType.PHONE_MOBILE, "+7 (920) 777-77-777");
         r.addContact(ContactType.PHONE_HOME, "+7 (495) 625-35-81");
@@ -57,12 +59,12 @@ public class TestResumeData {
         r.addContact(ContactType.HOME_PAGE, "https://ru.wikipedia.org/wiki/%D0%98%D0%B2%D0%B0%D0%BD_%D0%93%D1%80%D0%BE%D0%B7%D0%BD%D1%8B%D0%B9");
     }
 
-    private static void resumeFillSectionText(Resume r) {
+    public static void resumeFillSectionText(Resume r) {
         r.addSection(SectionType.OBJECTIVE, new TextSection("Государь, Царь и Великий князь всея Руси"));
         r.addSection(SectionType.PERSONAL, new TextSection("Великий, мудрый, креативный. Тиран."));
     }
 
-    private static void resumeFillSectionList(Resume r) {
+    public static void resumeFillSectionList(Resume r) {
         final List<String> listAchievement = new ArrayList<>();
         listAchievement.add("Увеличение территории государства в 2 раза.");
         listAchievement.add("Увеличение населения на 30-50%.");

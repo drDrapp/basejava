@@ -1,8 +1,7 @@
 package com.drdrapp.webapp.storage;
 
 import com.drdrapp.webapp.exeption.NotExistStorageException;
-import com.drdrapp.webapp.model.ContactType;
-import com.drdrapp.webapp.model.Resume;
+import com.drdrapp.webapp.model.*;
 import com.drdrapp.webapp.sql.SqlHelper;
 
 import java.sql.*;
@@ -20,6 +19,7 @@ public class SqlStorage implements Storage {
         sqlHelper.transactionExecute(connection -> {
                     insertResume(connection, r);
                     insertContacts(connection, r);
+                    insertSection(connection, r);
                     return null;
                 }
         );
@@ -47,6 +47,7 @@ public class SqlStorage implements Storage {
         sqlHelper.transactionExecute((connection) -> {
             updateResume(connection, r);
             updateContacts(connection, r);
+            updateSection(connection, r);
             return null;
         });
     }
@@ -62,28 +63,30 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.command("" +
-                        "SELECT r.uuid, r.full_name, c.type, c.value " +
-                        "  FROM resume r " +
-                        "  LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
-                        " ORDER BY full_name, uuid",
-                sqlBox -> {
-                    ResultSet sqlResult = sqlBox.executeQuery();
-                    Map<String, Resume> resumes_map = new LinkedHashMap<>();
-                    while (sqlResult.next()) {
-                        String currentUUID = sqlResult.getString("uuid");
-                        Resume r = resumes_map.get(currentUUID);
-                        if (r == null) {
-                            r = new Resume(currentUUID, sqlResult.getString("full_name"));
-                            resumes_map.put(currentUUID, r);
-                        }
-                        if (sqlResult.getString("type") != null) {
-                            addContact(r, sqlResult);
-                        }
-                    }
-                    return new ArrayList<>(resumes_map.values());
-                });
+        return sqlHelper.transactionExecute((connection) -> {
+            Map<String, Resume> resumes_map = new LinkedHashMap<>();
+            try (PreparedStatement sqlBox = connection.prepareStatement("SELECT uuid, full_name FROM resume ORDER BY full_name, uuid")) {
+                ResultSet sqlResult = sqlBox.executeQuery();
+                while (sqlResult.next()) {
+                    resumes_map.put(sqlResult.getString("uuid"), new Resume(sqlResult.getString("uuid"), sqlResult.getString("full_name")));
+                }
+            }
+            try (PreparedStatement sqlBox = connection.prepareStatement("SELECT type, value, resume_uuid FROM contact")) {
+                ResultSet sqlResult = sqlBox.executeQuery();
+                while (sqlResult.next()) {
+                    resumes_map.get(sqlResult.getString("resume_uuid")).addContact(ContactType.valueOf(sqlResult.getString("type")), sqlResult.getString("value"));
+                }
+            }
+            try (PreparedStatement sqlBox = connection.prepareStatement("SELECT type, value, resume_uuid FROM section")) {
+                ResultSet sqlResult = sqlBox.executeQuery();
+                while (sqlResult.next()) {
+                    addSection(sqlResult, resumes_map.get(sqlResult.getString("resume_uuid")));
+                }
+            }
+            return new ArrayList<>(resumes_map.values());
+        });
     }
+
     @Override
     public void clear() {
         sqlHelper.command("DELETE FROM resume");
@@ -92,6 +95,7 @@ public class SqlStorage implements Storage {
     private static Resume selectFullResume(String uuid, Connection connection) throws SQLException {
         Resume r = selectResume(uuid, connection);
         selectContacts(connection, r);
+        selectSection(connection, r);
         return r;
     }
 
@@ -160,6 +164,57 @@ public class SqlStorage implements Storage {
     private static void updateContacts(Connection connection, Resume r) throws SQLException {
         deleteContacts(connection, r);
         insertContacts(connection, r);
+    }
+
+    private static void selectSection(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("SELECT resume_uuid, type, value FROM section")) {
+            ResultSet sqlResult = sqlBox.executeQuery();
+            while (sqlResult.next()) {
+                addSection(sqlResult, r);
+            }
+        }
+    }
+
+    private static void addSection(ResultSet sqlResult, Resume r) throws SQLException {
+        var sectionType = SectionType.valueOf(sqlResult.getString("type"));
+        switch (sectionType) {
+            case ACHIEVEMENT, QUALIFICATIONS ->
+                    r.addSection(sectionType, new ListSection(Arrays.stream(sqlResult.getString("value").split("\n")).toList()));
+            case OBJECTIVE, PERSONAL -> r.addSection(sectionType, new TextSection(sqlResult.getString("value")));
+        }
+    }
+
+    private static void insertSection(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("INSERT INTO section VALUES (DEFAULT,?,?,?)")) {
+            for (var section : r.getSections().entrySet()) {
+                String sectionText =
+                        switch (section.getKey()) {
+                            case ACHIEVEMENT, QUALIFICATIONS ->
+                                    String.join("\n", ((ListSection) section.getValue()).getItems());
+                            case OBJECTIVE, PERSONAL -> ((TextSection) section.getValue()).getText();
+                            default -> null;
+                        };
+                if (sectionText != null) {
+                    sqlBox.setString(1, r.getUuid());
+                    sqlBox.setString(2, section.getKey().name());
+                    sqlBox.setString(3, sectionText);
+                    sqlBox.addBatch();
+                }
+            }
+            sqlBox.executeBatch();
+        }
+    }
+
+    private static void deleteSection(Connection connection, Resume r) throws SQLException {
+        try (PreparedStatement sqlBox = connection.prepareStatement("DELETE FROM section WHERE resume_uuid =?")) {
+            sqlBox.setString(1, r.getUuid());
+            sqlBox.executeUpdate();
+        }
+    }
+
+    private static void updateSection(Connection connection, Resume r) throws SQLException {
+        deleteSection(connection, r);
+        insertSection(connection, r);
     }
 
 }

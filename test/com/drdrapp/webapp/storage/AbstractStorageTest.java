@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static com.drdrapp.webapp.testdata.TestResumeData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -93,6 +94,9 @@ abstract class AbstractStorageTest {
     void update() {
         storage.save(RESUME_4);
         Resume resumeForUpdate = new Resume(RESUME_4.getUuid(), NAME_4);
+        resumeFillContacts(resumeForUpdate);
+        resumeFillSectionText(resumeForUpdate);
+        resumeFillSectionList(resumeForUpdate);
         storage.update(resumeForUpdate);
         assertEquals(resumeForUpdate, storage.get(UUID_4));
     }

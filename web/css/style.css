@@ -1,0 +1,52 @@
+body {
+    background-color: #F6F6F6;
+    font-family: "Lucida Sans Unicode" , "Lucida Grande", Sans-Serif;
+}
+
+header {
+    background-color: #ccddff;
+    border-color: inherit;
+    text-align: left;
+    vertical-align: top;
+    font-size: 14px
+}
+
+footer {
+    background-color: #6699CCFF;
+    border-color: inherit;
+    text-align: left;
+    vertical-align: top;
+    font-size: 14px
+}
+
+table {
+    border: 1px solid #6699CCFF;
+}
+th {
+    font-weight: normal;
+    color: #003399FF;
+    border-bottom: 1px dashed #6699CCFF;
+    padding: 12px 17px;
+    background: #D9E3FF;
+}
+td {
+    color: #3666EF;
+    padding: 7px 17px;
+}
+tr:hover td {
+    background: #D9E3FF;
+}
+
+A {
+    text-decoration: none;
+    color: #004EA7FF;
+}
+A:visited {
+    color: #004EA7FF;
+}
+
+A:hover {
+    text-decoration: underline;
+    color: #003366FF;
+}
+
