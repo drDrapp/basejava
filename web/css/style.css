@@ -1,52 +1,67 @@
 body {
-    background-color: #F6F6F6;
-    font-family: "Lucida Sans Unicode" , "Lucida Grande", Sans-Serif;
+    background-color: #FFFBE9;
+    font-family: "JetBrains Mono Medium", "Lucida Grande", sans-serif;
 }
 
 header {
-    background-color: #ccddff;
-    border-color: inherit;
+    background-color: #e3caa5;
     text-align: left;
     vertical-align: top;
-    font-size: 14px
+    font-size: 16px
 }
 
 footer {
-    background-color: #6699CCFF;
-    border-color: inherit;
-    text-align: left;
+    background-color: #e3caa5;
+    text-align: right;
     vertical-align: top;
-    font-size: 14px
+    font-size: 12px;
+    color: #698269;
 }
 
 table {
-    border: 1px solid #6699CCFF;
+    border: 1px solid #6f523c;
+    margin-left: 3%;
+    width: 50%
 }
+
+td:nth-child(1){
+    width: 45%;
+}
+
+td:nth-child(3),
+td:nth-child(4){
+    width: 10%;
+}
+
 th {
+    text-align: left;
     font-weight: normal;
-    color: #003399FF;
-    border-bottom: 1px dashed #6699CCFF;
+    color: #5d1e03;
+    border-bottom: 1px dashed #6f523c;
     padding: 12px 17px;
-    background: #D9E3FF;
+    background: #e3caa5;
 }
+
 td {
-    color: #3666EF;
-    padding: 7px 17px;
+    color: #5d1e03;
+    padding: 3px 17px;
+    vertical-align: top;
 }
+
 tr:hover td {
-    background: #D9E3FF;
+    background: #ceab93;
 }
 
 A {
     text-decoration: none;
-    color: #004EA7FF;
+    color: #c34123;
 }
+
 A:visited {
-    color: #004EA7FF;
+    color: #c34123;
 }
 
 A:hover {
     text-decoration: underline;
-    color: #003366FF;
+    color: #b7310a;
 }
-
