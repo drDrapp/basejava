@@ -3,9 +3,13 @@ package com.drdrapp.webapp.storage;
 import com.drdrapp.webapp.exeption.NotExistStorageException;
 import com.drdrapp.webapp.model.*;
 import com.drdrapp.webapp.sql.SqlHelper;
+import com.drdrapp.webapp.util.JsonParser;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
@@ -77,7 +81,7 @@ public class SqlStorage implements Storage {
                     resumes_map.get(sqlResult.getString("resume_uuid")).addContact(ContactType.valueOf(sqlResult.getString("type")), sqlResult.getString("value"));
                 }
             }
-            try (PreparedStatement sqlBox = connection.prepareStatement("SELECT type, value, resume_uuid FROM section")) {
+            try (PreparedStatement sqlBox = connection.prepareStatement("SELECT type, value, resume_uuid FROM section ORDER BY type")) {
                 ResultSet sqlResult = sqlBox.executeQuery();
                 while (sqlResult.next()) {
                     addSection(sqlResult, resumes_map.get(sqlResult.getString("resume_uuid")));
@@ -150,7 +154,7 @@ public class SqlStorage implements Storage {
     }
 
     private static void insertContacts(Connection connection, Resume r) throws SQLException {
-        try (PreparedStatement sqlBox = connection.prepareStatement("INSERT INTO contact VALUES (DEFAULT,?,?,?)")) {
+        try (PreparedStatement sqlBox = connection.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
             for (var contact : r.getContacts().entrySet()) {
                 sqlBox.setString(1, r.getUuid());
                 sqlBox.setString(2, contact.getKey().name());
@@ -167,7 +171,8 @@ public class SqlStorage implements Storage {
     }
 
     private static void selectSection(Connection connection, Resume r) throws SQLException {
-        try (PreparedStatement sqlBox = connection.prepareStatement("SELECT resume_uuid, type, value FROM section")) {
+        try (PreparedStatement sqlBox = connection.prepareStatement("SELECT resume_uuid, type, value FROM section WHERE resume_uuid =?")) {
+            sqlBox.setString(1, r.getUuid());
             ResultSet sqlResult = sqlBox.executeQuery();
             while (sqlResult.next()) {
                 addSection(sqlResult, r);
@@ -176,24 +181,13 @@ public class SqlStorage implements Storage {
     }
 
     private static void addSection(ResultSet sqlResult, Resume r) throws SQLException {
-        var sectionType = SectionType.valueOf(sqlResult.getString("type"));
-        switch (sectionType) {
-            case ACHIEVEMENT, QUALIFICATIONS ->
-                    r.addSection(sectionType, new ListSection(Arrays.stream(sqlResult.getString("value").split("\n")).toList()));
-            case OBJECTIVE, PERSONAL -> r.addSection(sectionType, new TextSection(sqlResult.getString("value")));
-        }
+        r.addSection(SectionType.valueOf(sqlResult.getString("type")), JsonParser.read(sqlResult.getString("value"), AbstractSection.class));
     }
 
     private static void insertSection(Connection connection, Resume r) throws SQLException {
-        try (PreparedStatement sqlBox = connection.prepareStatement("INSERT INTO section VALUES (DEFAULT,?,?,?)")) {
+        try (PreparedStatement sqlBox = connection.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
             for (var section : r.getSections().entrySet()) {
-                String sectionText =
-                        switch (section.getKey()) {
-                            case ACHIEVEMENT, QUALIFICATIONS ->
-                                    String.join("\n", ((ListSection) section.getValue()).getItems());
-                            case OBJECTIVE, PERSONAL -> ((TextSection) section.getValue()).getText();
-                            default -> null;
-                        };
+                String sectionText = JsonParser.write(section.getValue(), AbstractSection.class);
                 if (sectionText != null) {
                     sqlBox.setString(1, r.getUuid());
                     sqlBox.setString(2, section.getKey().name());

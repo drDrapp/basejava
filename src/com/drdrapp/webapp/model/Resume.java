@@ -13,7 +13,7 @@ public class Resume implements Comparable<Resume>, Serializable {
     private String uuid;
     private String fullName;
     private final Map<ContactType, String> contacts = new HashMap<>();
-    private final Map<SectionType, AbstractSection> sections = new HashMap<>();
+    private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume() {
     }

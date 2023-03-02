@@ -7,7 +7,8 @@ header {
     background-color: #e3caa5;
     text-align: left;
     vertical-align: top;
-    font-size: 16px
+    font-size: 14px;
+    color: #698269;
 }
 
 footer {
@@ -20,8 +21,8 @@ footer {
 
 table {
     border: 1px solid #6f523c;
-    margin-left: 3%;
-    width: 50%
+    margin-left: 2%;
+    width: 75%
 }
 
 td:nth-child(1){
@@ -36,19 +37,19 @@ td:nth-child(4){
 th {
     text-align: left;
     font-weight: normal;
-    color: #5d1e03;
+    color: #963c00;
     border-bottom: 1px dashed #6f523c;
-    padding: 12px 17px;
+    padding: 8px 16px;
     background: #e3caa5;
 }
 
 td {
-    color: #5d1e03;
+    color: #483611;
     padding: 3px 17px;
     vertical-align: top;
 }
 
-tr:hover td {
+tr.flash:hover td {
     background: #ceab93;
 }
 
@@ -64,4 +65,30 @@ A:visited {
 A:hover {
     text-decoration: underline;
     color: #b7310a;
+}
+
+table.none{
+    border: 0;
+    width: 95%
+}
+
+table.simple{
+    border: 1px dashed;
+    width: 95%
+}
+
+tr.simple{
+
+}
+
+td.simple{
+text-align: left;
+}
+
+td.simple:nth-child(1){
+    width: 20%;
+}
+
+td.simple:nth-child(2){
+    width: 80%;
 }

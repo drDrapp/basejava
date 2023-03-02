@@ -28,10 +28,10 @@ abstract class AbstractStorageTest {
     private static final String NAME_2 = "Евлампий Агапов";
     private static final String NAME_3 = "Эдуард Суровый";
     private static final String NAME_4 = "Виниамин Дорохов";
-    protected static final Resume RESUME_1 = TestResumeData.resumeCreate4SQL(UUID_1, NAME_1);
-    protected static final Resume RESUME_2 = TestResumeData.resumeCreate4SQL(UUID_2, NAME_2);
-    protected static final Resume RESUME_3 = TestResumeData.resumeCreate4SQL(UUID_3, NAME_3);
-    protected static final Resume RESUME_4 = TestResumeData.resumeCreate4SQL(UUID_4, NAME_4);
+    protected static final Resume RESUME_1 = TestResumeData.resumeCreate(UUID_1, NAME_1);
+    protected static final Resume RESUME_2 = TestResumeData.resumeCreate(UUID_2, NAME_2);
+    protected static final Resume RESUME_3 = TestResumeData.resumeCreate(UUID_3, NAME_3);
+    protected static final Resume RESUME_4 = TestResumeData.resumeCreate(UUID_4, NAME_4);
     protected static final File STORAGE_DIR = Config.getInstance().getStorageDir();
 
     protected final Storage storage;
@@ -97,6 +97,7 @@ abstract class AbstractStorageTest {
         resumeFillContacts(resumeForUpdate);
         resumeFillSectionText(resumeForUpdate);
         resumeFillSectionList(resumeForUpdate);
+        resumeFillSectionOrganization(resumeForUpdate);
         storage.update(resumeForUpdate);
         assertEquals(resumeForUpdate, storage.get(UUID_4));
     }
