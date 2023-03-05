@@ -1,5 +1,5 @@
-<%@ page import="com.drdrapp.webapp.model.ContactType" %>
-<%@ page import="com.drdrapp.webapp.model.SectionType" %>
+<%@ page import="ru.drdrapp.webapp.model.ContactType" %>
+<%@ page import="ru.drdrapp.webapp.model.SectionType" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
     <jsp:useBean
             id="resume"
-            type="com.drdrapp.webapp.model.Resume"
+            type="ru.drdrapp.webapp.model.Resume"
             scope="request"/>
     <title>Резюме ${resume.fullName}</title>
 </head>

@@ -1,4 +1,4 @@
-<%@ page import="com.drdrapp.webapp.model.ContactType" %>
+<%@ page import="ru.drdrapp.webapp.model.ContactType" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
@@ -23,7 +23,7 @@
         <c:forEach items="${resumes}" var="resume">
             <jsp:useBean
                     id="resume"
-                    type="com.drdrapp.webapp.model.Resume"/>
+                    type="ru.drdrapp.webapp.model.Resume"/>
             <tr class="flash">
                 <td><a href="resume?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
                 <td><%=ContactType.EMAIL.toHtml(resume.getContact(ContactType.EMAIL))%>

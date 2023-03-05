@@ -1,7 +1,7 @@
-<%@ page import="com.drdrapp.webapp.util.DateUtils" %>
+<%@ page import="ru.drdrapp.webapp.util.DateUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="resume" type="com.drdrapp.webapp.model.Resume" scope="request"/>
+<jsp:useBean id="resume" type="ru.drdrapp.webapp.model.Resume" scope="request"/>
 <tr>
     <th colspan="2">
         ${param.sectionTitle}
@@ -9,7 +9,7 @@
 </tr>
 <c:if test="${resume.getSection(param.sectionName) != null}">
     <c:set var="section" value="${resume.getSection(param.sectionName)}"/>
-    <jsp:useBean id="section" type="com.drdrapp.webapp.model.OrganizationsSection"/>
+    <jsp:useBean id="section" type="ru.drdrapp.webapp.model.OrganizationsSection"/>
     <%int orgId = 0;%>
     <c:forEach var="organization" items="<%=(section.getOrganizations())%>">
         <tr>
@@ -51,7 +51,7 @@
                         <td colspan="2" class="simple">
                             <c:forEach var="period" items="${organization.periods}">
                                 <jsp:useBean id="period"
-                                             type="com.drdrapp.webapp.model.Organization.Period"/>
+                                             type="ru.drdrapp.webapp.model.Organization.Period"/>
                                 <input name="${param.sectionName}_LinkOrgID"
                                        value="<%=orgId%>"
                                        type="hidden">
