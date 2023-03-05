@@ -44,14 +44,11 @@ public class DateUtils {
     }
 
     public static boolean checkNow(LocalDate date){
-        return MONTHS.between(date, LocalDate.now()) == 0;
+        return MONTHS.between(date, LocalDate.now()) <= 0;
     }
 
     public static String localDateForEdit(LocalDate date) {
-        return date.equals(DATE_OFF) ? "" :
-                ( checkNow(date) ?
-                        LocalDate.now().format(DATE_FORMATTER) :
-                        date.format(DATE_FORMATTER));
+        return date.equals(DATE_OFF) ? "" : date.format(DATE_FORMATTER);
     }
 
 }
