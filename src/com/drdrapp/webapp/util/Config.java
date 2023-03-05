@@ -1,4 +1,4 @@
-package com.drdrapp.webapp;
+package com.drdrapp.webapp.util;
 
 import com.drdrapp.webapp.storage.SqlStorage;
 import com.drdrapp.webapp.storage.Storage;
@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class Config {
-    private static final File PROPERTIES_DIR = new File("config\\resumes.properties");
+    private static final File PROPERTIES_DIR = new File("config/resumes.properties");
     private static final Config INSTANCE = new Config();
     private final File storageDir;
     private final Storage storage;

@@ -1,13 +1,10 @@
 package com.drdrapp.webapp.storage;
 
-import com.drdrapp.webapp.Config;
-
-import java.io.FileNotFoundException;
-import java.nio.file.NotDirectoryException;
+import com.drdrapp.webapp.util.Config;
 
 class SqlStorageTest extends AbstractStorageTest{
 
-    public SqlStorageTest() throws NotDirectoryException, FileNotFoundException {
+    public SqlStorageTest() {
         super(Config.getInstance().getStorage());
     }
 

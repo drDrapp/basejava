@@ -5,7 +5,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/style.css">
-    <title>Title</title>
+    <title>БД "Резюме"</title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>

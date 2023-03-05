@@ -1,6 +1,6 @@
 package com.drdrapp.webapp.storage;
 
-import com.drdrapp.webapp.Config;
+import com.drdrapp.webapp.util.Config;
 import com.drdrapp.webapp.exeption.ExistStorageException;
 import com.drdrapp.webapp.exeption.NotExistStorageException;
 import com.drdrapp.webapp.model.Resume;

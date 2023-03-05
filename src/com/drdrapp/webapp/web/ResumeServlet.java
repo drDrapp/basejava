@@ -1,8 +1,8 @@
 package com.drdrapp.webapp.web;
 
-import com.drdrapp.webapp.Config;
 import com.drdrapp.webapp.model.*;
 import com.drdrapp.webapp.storage.Storage;
+import com.drdrapp.webapp.util.Config;
 import com.drdrapp.webapp.util.DateUtils;
 
 import javax.servlet.ServletContext;
@@ -106,7 +106,7 @@ public class ResumeServlet extends HttpServlet {
 
     private void fillSection(HttpServletRequest request, Resume r, SectionType sectionType) {
         List<Organization> organizations = parseSection(request, sectionType);
-        if (DateUtils.isEmpty(organizations.toString())) {
+        if (Objects.equals(organizations.toString(), "[]")) {
             r.getSections().remove(sectionType);
         } else {
             r.addSection(sectionType, new OrganizationsSection(parseSection(request, sectionType)));
@@ -126,7 +126,7 @@ public class ResumeServlet extends HttpServlet {
         List<Organization> organizations = new ArrayList<>();
         if (arrOrgID != null) {
             Map<String, List<Integer>> mapLinkOrgID = new HashMap<>();
-            if (arrLinkOrgID != null) {
+            if (arrLinkOrgID != null && arrLinkOrgID.length > 0) {
                 for (int i = 0; i < arrLinkOrgID.length; i++) {
                     if (!DateUtils.isEmpty(arrLinkOrgID[i])) {
                         if (mapLinkOrgID.get(arrLinkOrgID[i]) == null) {
@@ -142,13 +142,16 @@ public class ResumeServlet extends HttpServlet {
                 if (!DateUtils.isEmpty(title)) {
                     List<Organization.Period> periods = new ArrayList<>();
                     if (!mapLinkOrgID.isEmpty()) {
-                        for (var j : mapLinkOrgID.get(arrOrgID[i])) {
-                            if (!DateUtils.isEmpty(arrPosition[j])) {
-                                periods.add(new Organization.Period(
-                                        ResumeHtml.escapeHTML(arrPosition[j]),
-                                        ResumeHtml.escapeHTML(arrDescription[j]),
-                                        DateUtils.stringToLocalDate(arrDateFrom[j]),
-                                        DateUtils.stringToLocalDate(arrDateTo[j])));
+                        var listPeriods = mapLinkOrgID.get(arrOrgID[i]);
+                        if (listPeriods != null) {
+                            for (var j : listPeriods) {
+                                if (!DateUtils.isEmpty(arrPosition[j])) {
+                                    periods.add(new Organization.Period(
+                                            ResumeHtml.escapeHTML(arrPosition[j]),
+                                            ResumeHtml.escapeHTML(arrDescription[j]),
+                                            DateUtils.stringToLocalDate(arrDateFrom[j]),
+                                            DateUtils.stringToLocalDate(arrDateTo[j])));
+                                }
                             }
                         }
                     }
