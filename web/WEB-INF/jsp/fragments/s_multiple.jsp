@@ -63,7 +63,7 @@
                                                 <input type="text"
                                                        name="${param.sectionName}_dateFrom"
                                                        size="10"
-                                                       value="<%=DateUtils.localDateToString(period.getDateFrom())%>"
+                                                       value="<%=DateUtils.localDateForEdit(period.getDateFrom())%>"
                                                        placeholder="MM/yyyy">
                                             </label>
                                         </td>
@@ -75,7 +75,7 @@
                                                 <input type="text"
                                                        name="${param.sectionName}_dateTo"
                                                        size="10"
-                                                       value="<%=DateUtils.localDateToString(period.getDateTo())%>"
+                                                       value="<%=DateUtils.localDateForEdit(period.getDateTo())%>"
                                                        placeholder="MM/yyyy">
                                             </label>
                                         </td>
